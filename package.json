@@ -14,7 +14,7 @@
   },
   "scripts": {
     "babel": "babel --presets es2015 app/main.js -o build/main.js",
-    "build": "npm run babel && cp app/index.html build/",
+    "build": "npm run babel && cp app/index.html build/ && cp app/css/style build/css/",
     "start": "http-server app/"
   },
   "babel": {
