@@ -13,8 +13,14 @@
     "http-server": "^0.11.1"
   },
   "scripts": {
-    "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
-    "start": "http-server"
+    "babel": "babel --presets es2015 app/main.js -o build/main.js",
+    "build": "npm run babel && cp app/index.html build/",
+    "start": "http-server app/"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "keywords": [],
   "author": "Nermin Skenderovic",
