@@ -1,5 +1,6 @@
 class Substance {
-  constructor(name, hotkey = null) {
+  constructor(name, id, hotkey = null) {
+    this.id = id;
     this.name = name;
     this.counter = 0;
     // if hotkey, this.setHotKey(hotkey)
