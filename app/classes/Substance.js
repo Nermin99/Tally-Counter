@@ -1,4 +1,4 @@
-class Bacteria {
+class Substance {
   constructor(name, hotkey = null) {
     this.name = name;
     this.counter = 0;
@@ -12,6 +12,7 @@ class Bacteria {
 
   decrement() {
     if (this.counter == 0) return;
+    console.log("decrementing");
     this.counter--;
   };
 
@@ -21,4 +22,4 @@ class Bacteria {
 
 }
 
-// export default Bacteria;
+// export default Substance;

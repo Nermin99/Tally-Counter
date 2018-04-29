@@ -1,4 +1,4 @@
-//import Bacteria from './classes/Bacteria';
+//import Substance from './classes/Substance';
 
 /**
  * Global
@@ -14,52 +14,105 @@ let View = {
   // title: '',
   // date: '',
   hotkeys: {},
-  bacterias: []
-}
-
-let Hotkey = {
-  97: ''
+  substances: []
 }
 
 function init() {
 
-  var bacterias = [
-    new Bacteria("Vitsippa"),
-    new Bacteria("Blåsippa"),
-    new Bacteria("Ros"),
+  var substances = [
+    new Substance("Vitsippa"),
+    new Substance("Blåsippa"),
+    new Substance("Ros"),
   ];
 
-  View.bacterias = bacterias;
+  View.substances = substances;
 
   render();
 }
 init();
 
-function increment(index) {
-  View.bacterias[index].increment();
-  render();
+function increment(e) {
+  console.log(e);
+  //View.substances[index].increment();
+  //render();
 }
 
 function decrement(index) {
-  View.bacterias[index].decrement();
+  View.substances[index].decrement();
   render();
 }
 
 function render() {
   const html = `
         <ul>
-          ${ View.bacterias.map((bacteria, index) =>
-            `<li>
-                ${bacteria.name}
-                <b>${bacteria.counter}</b>
-                <button onclick="increment(${index})">^</button>
-                <button onclick="decrement(${index})">v</button>
-            </li>`
+          ${ View.substances.map((Substance, index) =>
+            `<li class='obj'>
+                ${Substance.name}
+                <b>${Substance.counter}</b>
+                <button onclick="increment(${this})">^</button>
+                <button onclick="decrement(this)">v</button>
+            </li> <hr>`
           ).join("") }
         </ul>`
 
-    root.innerHTML = html;
+  root.innerHTML = html;
 }
+
+/**
+ * Hotkeys
+ */
+
+let hotkeys = [];
+
+let buttons = document.querySelectorAll('li');
+buttons.forEach(button => button.addEventListener('click', assignHotkey));
+
+function assignHotkey() {
+  console.log("press a key");
+  window.addEventListener('keyup', settingHotkey, { once:true });
+  window.removeEventListener('keydown', runHotkey);
+}
+
+function settingHotkey(e) {
+  e.preventDefault();
+
+  const keyCombo = {
+    key: e.key,
+    alt: e.altKey,
+    ctrl: e.ctrlKey,
+    shift: e.shiftKey
+  }
+
+  console.log("setting key", keyCombo);
+
+  hotkeys.push(keyCombo);
+  window.addEventListener('keydown', runHotkey);
+}
+
+function runHotkey(e) {
+  e.preventDefault();
+
+  const keyCombo = {
+    key: e.key,
+    alt: e.altKey,
+    ctrl: e.ctrlKey,
+    shift: e.shiftKey,
+  }
+
+  console.log("running key", e.key);
+
+  const substance = hotkeys.find(combo => {
+    return JSON.stringify(combo) === JSON.stringify(keyCombo);
+  });
+
+  if (!substance) return;
+  console.log("incrementing...", substance);
+  // increment(e);
+}
+
+/**
+ * save & load
+ */
 
 function save(key, value) {
   try {
