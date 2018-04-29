@@ -13,16 +13,16 @@ const root = document.querySelector("#root");
 let View = {
   // title: '',
   // date: '',
-  hotkeys: {},
+  hotkeys: [],
   substances: []
 }
 
 function init() {
 
   var substances = [
-    new Substance("Vitsippa"),
-    new Substance("Blåsippa"),
-    new Substance("Ros"),
+    new Substance("Vitsippa", 0),
+    new Substance("Blåsippa", 1),
+    new Substance("Ros", 2),
   ];
 
   View.substances = substances;
@@ -31,61 +31,88 @@ function init() {
 }
 init();
 
-function increment(e) {
-  console.log(e);
-  //View.substances[index].increment();
-  //render();
+function increment(id) {
+  const substance = View.substances.find(sub => sub.id==id)
+  substance.increment();
+  render();
 }
 
-function decrement(index) {
-  View.substances[index].decrement();
+function decrement(id) {
+  const substance = View.substances.find(sub => sub.id==id)
+  substance.decrement();
+  render();
+}
+
+function addNew(substance) {
+  // Kolla så att ID är unikt
+  // Exempelvis array.length + 1;
+  View.substances.push(substance);
   render();
 }
 
 function render() {
   const html = `
         <ul>
-          ${ View.substances.map((Substance, index) =>
-            `<li class='obj'>
-                ${Substance.name}
-                <b>${Substance.counter}</b>
-                <button onclick="increment(${this})">^</button>
-                <button onclick="decrement(this)">v</button>
-            </li> <hr>`
+          ${ View.substances.map((substance) => {
+            const hotKey = View.hotkeys.find(viewHotkeys => viewHotkeys.id === substance.id);
+            return `<li class='obj' onclick="assignHotkey(${substance.id})">
+                ${substance.name}
+                <b>${substance.counter}</b>
+                <button onclick="increment(${substance.id})">^</button>
+                <button onclick="decrement(${substance.id})">v</button>
+                <span>${hotKey ? hotKey.keyCombo.key : 'no key'}</span>
+            </li> <hr>`}
           ).join("") }
         </ul>`
 
   root.innerHTML = html;
+
+  //printView();
 }
+
+// function printView() {
+//   root.innerHTML += JSON.stringify(View);
+// }
 
 /**
  * Hotkeys
  */
 
-let hotkeys = [];
 
-let buttons = document.querySelectorAll('li');
-buttons.forEach(button => button.addEventListener('click', assignHotkey));
+// let buttons = document.querySelectorAll('li');
+// buttons.forEach(button => button.addEventListener('click', assignHotkey));
 
-function assignHotkey() {
+function assignHotkey(id) {
   console.log("press a key");
-  window.addEventListener('keyup', settingHotkey, { once:true });
+  window.removeEventListener('keyup', settingHotkey);
+  window.addEventListener('keyup', (e) => {settingHotkey(id, e)}, { once:true });
   window.removeEventListener('keydown', runHotkey);
 }
 
-function settingHotkey(e) {
+function settingHotkey(id, e) {
   e.preventDefault();
 
-  const keyCombo = {
-    key: e.key,
-    alt: e.altKey,
-    ctrl: e.ctrlKey,
-    shift: e.shiftKey
+  let hotkey = {
+    id: null,
+    keyCombo: {
+      key: e.key,
+      alt: e.altKey,
+      ctrl: e.ctrlKey,
+      shift: e.shiftKey
+    }
   }
 
-  console.log("setting key", keyCombo);
+  // If exist
+  const substance = View.hotkeys.find(viewHotkeys => {
+    return JSON.stringify(viewHotkeys.keyCombo) === JSON.stringify(hotkey.keyCombo);
+  });
 
-  hotkeys.push(keyCombo);
+  if (!substance) {
+    console.log("setting key", hotkey.keyCombo);
+    hotkey.id = id;
+    View.hotkeys.push(hotkey);
+  }
+
   window.addEventListener('keydown', runHotkey);
 }
 
@@ -101,13 +128,13 @@ function runHotkey(e) {
 
   console.log("running key", e.key);
 
-  const substance = hotkeys.find(combo => {
-    return JSON.stringify(combo) === JSON.stringify(keyCombo);
+  const hotKey = View.hotkeys.find(viewHotkeys => {
+    return JSON.stringify(viewHotkeys.keyCombo) === JSON.stringify(keyCombo);
   });
 
-  if (!substance) return;
-  console.log("incrementing...", substance);
-  // increment(e);
+  if (!hotKey) return;
+  console.log("incrementing...");
+  increment(hotKey.id);
 }
 
 /**
