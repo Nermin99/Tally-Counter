@@ -66,21 +66,11 @@ function render() {
         </ul>`
 
   root.innerHTML = html;
-
-  //printView();
 }
-
-// function printView() {
-//   root.innerHTML += JSON.stringify(View);
-// }
 
 /**
  * Hotkeys
  */
-
-
-// let buttons = document.querySelectorAll('li');
-// buttons.forEach(button => button.addEventListener('click', assignHotkey));
 
 function assignHotkey(id) {
   console.log("press a key");
@@ -103,14 +93,32 @@ function settingHotkey(id, e) {
   }
 
   // If exist
-  const substance = View.hotkeys.find(viewHotkeys => {
-    return JSON.stringify(viewHotkeys.keyCombo) === JSON.stringify(hotkey.keyCombo);
+  const shortcut = View.hotkeys.find(viewHotkey => {
+    return JSON.stringify(viewHotkey.keyCombo) === JSON.stringify(hotkey.keyCombo);
   });
 
-  if (!substance) {
-    console.log("setting key", hotkey.keyCombo);
+  // Replaces existing hotkey
+  if (shortcut) {
+    // if exist
+    const replaced = View.hotkeys.find(viewHotkey => viewHotkey.id === id);
+    if (replaced) {
+      View.hotkeys.splice(View.hotkeys.indexOf(replaced), 1);
+    }
+    shortcut.id = id;
+
+    console.log(`replaced key with ${shortcut.keyCombo.key}`);
+  }
+
+  if (!shortcut) {
+    // if exist
+    const replaced = View.hotkeys.find(viewHotkey => viewHotkey.id === id);
+    if (replaced) {
+      View.hotkeys.splice(View.hotkeys.indexOf(replaced), 1);
+    }
+
     hotkey.id = id;
     View.hotkeys.push(hotkey);
+    console.log("setting key", hotkey.keyCombo.key);
   }
 
   window.addEventListener('keydown', runHotkey);
@@ -133,7 +141,6 @@ function runHotkey(e) {
   });
 
   if (!hotKey) return;
-  console.log("incrementing...");
   increment(hotKey.id);
 }
 
