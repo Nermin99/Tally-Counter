@@ -1,7 +1,22 @@
-li {
-  background-color: green;
+.hotkey, .pointer {
+  cursor: pointer;
 }
 
-li:hover {
-  cursor: pointer;
+/* Custom bootstrap */
+.table {
+  width: 80%;
+  margin-bottom: 5rem;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #e1efda;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table .thead-dark th {
+  background-color: #6fad47;
+  border-color: #6fad47;
 }
