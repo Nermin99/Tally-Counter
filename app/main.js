@@ -20,9 +20,14 @@ let View = {
 function init() {
 
   var substances = [
-    new Substance("Vitsippa", 0),
-    new Substance("Blåsippa", 1),
-    new Substance("Ros", 2),
+    new Substance("Vitsippa", 1),
+    new Substance("Blåsippa", 2),
+    new Substance("Ros", 3),
+    new Substance("Vass", 4),
+    new Substance("Säv", 5),
+    new Substance("Kaveldun", 6),
+    new Substance("Gul", 7),
+    new Substance("Natearter", 8),
   ];
 
   View.substances = substances;
@@ -46,24 +51,43 @@ function decrement(id) {
 function addNew(substance) {
   // Kolla så att ID är unikt
   // Exempelvis array.length + 1;
-  View.substances.push(substance);
+
+  const sub = new Substance("", View.substances.length + 1);
+  View.substances.push(sub);
   render();
 }
 
 function render() {
   const html = `
-        <ul>
+        <table id="table" class="table table-striped table-bordered table-hover">
+          <thead class="thead-dark">
+            <th scope="col">#</th>
+            <th scope="col">Ämne</th>
+            <th scope="col">Hotkey</th>
+            <th scope="col">Zoom</th>
+            <th scope="col">Antal</th>
+          </thead>
+          <tbody>
           ${ View.substances.map((substance) => {
             const hotKey = View.hotkeys.find(viewHotkeys => viewHotkeys.id === substance.id);
-            return `<li class='obj' onclick="assignHotkey(${substance.id})">
-                ${substance.name}
-                <b>${substance.counter}</b>
-                <button onclick="increment(${substance.id})">^</button>
-                <button onclick="decrement(${substance.id})">v</button>
-                <span>${hotKey ? hotKey.keyCombo.key : 'no key'}</span>
-            </li> <hr>`}
-          ).join("") }
-        </ul>`
+            return `
+              <tr>
+                <td>${substance.id}</td>
+                <td class="substance" contenteditable="true">${substance.name}</td>
+                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotKey ? hotKey.keyCombo.shift ? "shift +" : "" : ""} ${hotKey ? hotKey.keyCombo.ctrl ? "ctrl +" : "" : ""} ${hotKey ? hotKey.keyCombo.alt ? "alt +" : "" : ""} ${hotKey ? hotKey.keyCombo.key : 'no key'}</td>
+                <td class="zoom" contenteditable="true">100x</td>
+                <th class="counter">${substance.counter}</th>
+              </tr>` }
+            ).join("") }
+
+              <tr>
+                <th class="pointer" colspan="5" onclick="addNew()">
+                  <img>
+                  Lägg Till
+                </th>
+              </tr>
+          </tbody>
+        </table>`
 
   root.innerHTML = html;
 }
@@ -82,24 +106,37 @@ function assignHotkey(id) {
 function settingHotkey(id, e) {
   e.preventDefault();
 
+  let key = String.fromCharCode(e.keyCode);
+  // Å Ä Ö
+  switch (e.keyCode) {
+    case 219:
+      key = "Å";
+      break;
+    case 222:
+      key = "Ä";
+      break;
+    case 186:
+      key = "Ö"
+  }
+
   let hotkey = {
     id: null,
     keyCombo: {
-      key: e.key,
+      key: key,
       alt: e.altKey,
       ctrl: e.ctrlKey,
       shift: e.shiftKey
     }
   }
 
-  // If exist
+  // If shortcut exists
   const shortcut = View.hotkeys.find(viewHotkey => {
     return JSON.stringify(viewHotkey.keyCombo) === JSON.stringify(hotkey.keyCombo);
   });
 
   // Replaces existing hotkey
   if (shortcut) {
-    // if exist
+    // if substance already has shortcut
     const replaced = View.hotkeys.find(viewHotkey => viewHotkey.id === id);
     if (replaced) {
       View.hotkeys.splice(View.hotkeys.indexOf(replaced), 1);
@@ -107,10 +144,8 @@ function settingHotkey(id, e) {
     shortcut.id = id;
 
     console.log(`replaced key with ${shortcut.keyCombo.key}`);
-  }
-
-  if (!shortcut) {
-    // if exist
+  } else {
+    // if substance already has shortcut
     const replaced = View.hotkeys.find(viewHotkey => viewHotkey.id === id);
     if (replaced) {
       View.hotkeys.splice(View.hotkeys.indexOf(replaced), 1);
@@ -121,20 +156,34 @@ function settingHotkey(id, e) {
     console.log("setting key", hotkey.keyCombo.key);
   }
 
+  render();
   window.addEventListener('keydown', runHotkey);
 }
 
 function runHotkey(e) {
   e.preventDefault();
 
+  let key = String.fromCharCode(e.keyCode);
+  // Å Ä Ö
+  switch (e.keyCode) {
+    case 219:
+      key = "Å";
+      break;
+    case 222:
+      key = "Ä";
+      break;
+    case 186:
+      key = "Ö"
+  }
+
   const keyCombo = {
-    key: e.key,
+    key: key,
     alt: e.altKey,
     ctrl: e.ctrlKey,
     shift: e.shiftKey,
   }
 
-  console.log("running key", e.key);
+  console.log("running key", e);
 
   const hotKey = View.hotkeys.find(viewHotkeys => {
     return JSON.stringify(viewHotkeys.keyCombo) === JSON.stringify(keyCombo);
