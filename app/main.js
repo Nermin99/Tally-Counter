@@ -96,7 +96,7 @@ function render() {
             <th scope="col">Ämne</th>
             <th scope="col">Hotkey</th>
             <th scope="col">Zoom</th>
-            <th scope="col" colspan="1">Antal</th>
+            <th scope="col" colspan="2">Antal</th>
           </thead>
           <tbody>
           ${ View.substances.map((substance) => {
@@ -117,7 +117,7 @@ function render() {
                   <img src="img/plus.png" height="26px">
                   Lägg Till Rad
                 </th>
-                <td colspan="2">
+                <td colspan="3">
                   <input id="number" type="number" value="1">
                 </td>
               </tr>
