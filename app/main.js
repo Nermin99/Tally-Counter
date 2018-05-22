@@ -38,9 +38,7 @@ init();
 function increment(id) {
   const substance = View.substances.find(sub => sub.id == id)
   substance.increment();
-  render();
-
-  setTimeout(() => animate(id), 50);
+  animate(id);
 }
 
 function decrement(id) {
@@ -77,21 +75,28 @@ function removeOld(id) {
 
 function animate(id, e) {
   const substanceCell = document.querySelector(`[data-id="${id}"]`);
-  
+  if (substanceCell.dataset.animating) return; // don't add another animation if current one is running
+
   substanceCell.classList.add('animate');
+  substanceCell.dataset.animating = "true";
 
-  // console.log(substanceCell);
-
-  substanceCell.addEventListener('transitionend', (e) => {
-    // console.log(e);
-    if (e.propertyName !== 'transform') return;
-    e.target.classList.remove('animate');
-    // setTimeout(() => e.target.classList.remove('animate'), 0);
-    
+  substanceCell.addEventListener("webkitTransitionEnd", function(event) {
+    // remove the class
+    substanceCell.classList.remove("animate");
+    substanceCell.addEventListener("webkitTransitionEnd", function(event) {
+      substanceCell.dataset.animating = "false";
+      render(); // render once the remove is complete
+    });
   });
 }
 
 function render() {
+
+  const currentAnimation = document.querySelector(".animate");
+  if (currentAnimation && currentAnimation.dataset.animating) {
+    return; // current 
+  }
+
   const html = `
         <table id="table" class="table table-striped table-bordered table-hover">
           <thead class="thead-dark">
@@ -128,6 +133,7 @@ function render() {
         </table>`
 
   root.innerHTML = html;
+  
 }
 
 /**
@@ -226,7 +232,7 @@ function runHotkey(e) {
     shift: e.shiftKey,
   }
 
-  console.log("running key", keyCombo.key);
+  // console.log("running key", keyCombo.key);
 
   const hotKey = View.hotkeys.find(viewHotkeys => {
     return JSON.stringify(viewHotkeys.keyCombo) === JSON.stringify(keyCombo);
