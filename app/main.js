@@ -40,7 +40,7 @@ function increment(id) {
   substance.increment();
   render();
 
-  // animate(id);
+  setTimeout(() => animate(id), 50);
 }
 
 function decrement(id) {
@@ -77,14 +77,17 @@ function removeOld(id) {
 
 function animate(id, e) {
   const substanceCell = document.querySelector(`[data-id="${id}"]`);
+  
   substanceCell.classList.add('animate');
 
-  console.log(substanceCell);
+  // console.log(substanceCell);
 
   substanceCell.addEventListener('transitionend', (e) => {
-    console.log(e);
+    // console.log(e);
     if (e.propertyName !== 'transform') return;
-    e.target.classList.remove('playing');
+    e.target.classList.remove('animate');
+    // setTimeout(() => e.target.classList.remove('animate'), 0);
+    
   });
 }
 
@@ -132,6 +135,11 @@ function render() {
  */
 
 function assignHotkey(id) {
+
+  let currentElem = document.querySelector(`[data-id='${id}']`);
+  // const oldKey = currentElem.querySelector(".hotkey").innerText;
+  currentElem.querySelector(".hotkey").innerText = "select key please";
+  
   console.log("press a key");
   window.removeEventListener('keyup', settingHotkey);
   window.addEventListener('keyup', (e) => {settingHotkey(id, e)}, { once:true });
