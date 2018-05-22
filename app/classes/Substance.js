@@ -7,13 +7,11 @@ class Substance {
   }
 
   increment() {
-    console.log("incrementing");
     this.counter++;
   };
 
   decrement() {
     if (this.counter == 0) return;
-    console.log("decrementing");
     this.counter--;
   };
 
