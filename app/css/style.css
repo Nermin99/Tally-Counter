@@ -16,7 +16,7 @@
 }
 
 .table tr {
-  transition: all 0.3s;
+  transition: transform 0.3s;
 }
 
 .table td.id { width: 15%; }
