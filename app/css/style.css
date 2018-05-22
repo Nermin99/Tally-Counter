@@ -2,7 +2,6 @@
   cursor: pointer;
 }
 
-
 .animate {
   transform: scale(1.05);
   box-shadow: 0 0 1rem #ffc600;
@@ -16,7 +15,7 @@
 }
 
 .table tr {
-  transition: transform 0.3s;
+  transition: all 0.07s ease;
 }
 
 .table td.id { width: 15%; }
@@ -40,4 +39,17 @@
 .table .thead-dark th {
   background-color: #6fad47;
   border-color: #6fad47;
+}
+
+/* Custom fontawesome */
+.fa-plus-circle {
+  color: green;
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  line-height: 30%;
+}
+
+.fa-minus-circle {
+  color: red;
+  font-size: 1.5rem;
 }

@@ -74,27 +74,26 @@ function removeOld(id) {
 }
 
 function animate(id, e) {
-  const substanceCell = document.querySelector(`[data-id="${id}"]`);
-  if (substanceCell.dataset.animating) return; // don't add another animation if current one is running
+  const substanceRow = document.querySelector(`[data-id="${id}"]`);
+  if (substanceRow.dataset.animating) return; // don't add another animation if current one is running
 
-  substanceCell.classList.add('animate');
-  substanceCell.dataset.animating = "true";
+  substanceRow.classList.add('animate');
+  substanceRow.dataset.animating = "true";
 
-  substanceCell.addEventListener("webkitTransitionEnd", function(event) {
+  substanceRow.addEventListener("transitionend", () => {
     // remove the class
-    substanceCell.classList.remove("animate");
-    substanceCell.addEventListener("webkitTransitionEnd", function(event) {
-      substanceCell.dataset.animating = "false";
+    substanceRow.classList.remove("animate");
+    substanceRow.addEventListener("transitionend", () => {
+      substanceRow.dataset.animating = "false";
       render(); // render once the remove is complete
     });
   });
 }
 
 function render() {
-
   const currentAnimation = document.querySelector(".animate");
   if (currentAnimation && currentAnimation.dataset.animating) {
-    return; // current 
+    return; // current
   }
 
   const html = `
@@ -116,14 +115,14 @@ function render() {
                 <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotKey ? hotKey.keyCombo.shift ? "shift +" : "" : ""} ${hotKey ? hotKey.keyCombo.ctrl ? "ctrl +" : "" : ""} ${hotKey ? hotKey.keyCombo.alt ? "alt +" : "" : ""} ${hotKey ? hotKey.keyCombo.key : 'no key'}</td>
                 <td class="zoom" contenteditable="true">100x</td>
                 <th class="counter">${substance.counter}</th>
-                <td> <img src="img/minus.png" height="26px" class="pointer" onclick="removeOld(${substance.id})"> </td>
+                <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
             ).join("") }
 
               <tr>
                 <th class="pointer" colspan="3" onclick="addNew()">
-                  <img src="img/plus.png" height="26px">
-                  Lägg Till Rad
+                  <i class="fas fa-plus-circle"></i>
+                  <span id="addRow">Lägg Till Rad</span>
                 </th>
                 <td colspan="3">
                   <input id="number" type="number" value="1">
@@ -133,7 +132,6 @@ function render() {
         </table>`
 
   root.innerHTML = html;
-  
 }
 
 /**
@@ -141,12 +139,9 @@ function render() {
  */
 
 function assignHotkey(id) {
-
   let currentElem = document.querySelector(`[data-id='${id}']`);
-  // const oldKey = currentElem.querySelector(".hotkey").innerText;
   currentElem.querySelector(".hotkey").innerText = "select key please";
-  
-  console.log("press a key");
+
   window.removeEventListener('keyup', settingHotkey);
   window.addEventListener('keyup', (e) => {settingHotkey(id, e)}, { once:true });
   window.removeEventListener('keydown', runHotkey);
