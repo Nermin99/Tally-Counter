@@ -1,9 +1,10 @@
 class Substance {
-  constructor(name, id, hotkey = null) {
+  constructor(name, id, keyCombo = null, zoom = "100x") {
     this.id = id;
     this.name = name;
     this.counter = 0;
-    // if hotkey, this.setHotKey(hotkey)
+    if (keyCombo) this.setKeyCombo(keyCombo);
+    this.zoom = zoom;
   }
 
   increment() {
@@ -15,8 +16,12 @@ class Substance {
     this.counter--;
   };
 
-  setHotKey(key) {
-    // Doesn't affect this instance, it only points to the global hotkey object
+  setKeyCombo(keyCombo) {
+    this.keyCombo = keyCombo;
+  }
+
+  setZoom(zoom) {
+    this.zoom = zoom
   }
 
 }
