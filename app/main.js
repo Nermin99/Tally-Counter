@@ -1,4 +1,4 @@
-//import Substance from './classes/Substance';
+// import Substance from './classes/Substance';
 
 /**
  * Global
@@ -9,16 +9,10 @@ const root = document.querySelector("#root");
 /**
  * Objects
  */
-
-let View = {
-  // title: '',
-  // date: '',
-  hotkeys: [],
-  substances: []
-}
+var substanceS = [];
 
 function init() {
-  var substances = [
+  let subs = [
     new Substance("Vitsippa", 0),
     new Substance("Blåsippa", 1),
     new Substance("Ros", 2),
@@ -29,20 +23,18 @@ function init() {
     new Substance("Natearter", 7),
   ];
 
-  View.substances = substances;
+  substanceS = subs;
 
   render();
 }
 init();
 
-function increment(id) {
-  const substance = View.substances.find(sub => sub.id == id)
+function increment(substance) {
   substance.increment();
-  animate(id);
+  animate(substance.id);
 }
 
-function decrement(id) {
-  const substance = View.substances.find(sub => sub.id == id)
+function decrement(substance) {
   substance.decrement();
   render();
 }
@@ -51,25 +43,19 @@ function addNew() {
   const n = document.querySelector('#number').value;
 
   for (let i = 0; i < n; i++) {
-    const sub = new Substance("", View.substances.length);
-    View.substances.push(sub);
+    const substance = new Substance("", substanceS.length);
+    substanceS.push(substance);
   }
   render();
 }
 
 function removeOld(id) {
-  View.substances.splice(id, 1);
-  View.hotkeys.splice(id, 1)
+  substanceS.splice(id, 1);
 
-  for (let i = id; i < View.substances.length; i++) {
-    View.substances[i].id--;
+  for (let i = id; i < substanceS.length; i++) {
+    substanceS[i].id--;
   }
-  /* Byt till objektorienterade hotkeys!!! */
-  View.hotkeys.forEach(key => {
-    if (key.id >= id) {
-      key.id--;
-    }
-  });
+
   render();
 }
 
@@ -106,14 +92,14 @@ function render() {
             <th scope="col" colspan="2">Antal</th>
           </thead>
           <tbody>
-          ${ View.substances.map((substance) => {
-            const hotKey = View.hotkeys.find(viewHotkeys => viewHotkeys.id === substance.id);
+          ${ substanceS.map(substance => {
+            const hotkey = substance.keyCombo;
             return `
               <tr data-id="${substance.id}">
                 <td class="id">${substance.id}</td>
                 <td class="substance">${substance.name}</td>
-                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotKey ? hotKey.keyCombo.shift ? "shift +" : "" : ""} ${hotKey ? hotKey.keyCombo.ctrl ? "ctrl +" : "" : ""} ${hotKey ? hotKey.keyCombo.alt ? "alt +" : "" : ""} ${hotKey ? hotKey.keyCombo.key : 'no key'}</td>
-                <td class="zoom" contenteditable="true">100x</td>
+                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
+                <td class="zoom" contenteditable="true">${substance.zoom}</td>
                 <th class="counter">${substance.counter}</th>
                 <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
@@ -163,42 +149,21 @@ function settingHotkey(id, e) {
       key = "Ö"
   }
 
-  let hotkey = {
-    id: null,
-    keyCombo: {
-      key: key,
-      alt: e.altKey,
-      ctrl: e.ctrlKey,
-      shift: e.shiftKey
-    }
+  const keyCombo = {
+    key: key,
+    alt: e.altKey,
+    ctrl: e.ctrlKey,
+    shift: e.shiftKey
   }
 
-  // If shortcut exists
-  const shortcut = View.hotkeys.find(viewHotkey => {
-    return JSON.stringify(viewHotkey.keyCombo) === JSON.stringify(hotkey.keyCombo);
-  });
+  const otherSubstance = substanceS.find(substance => {
+    return JSON.stringify(substance.keyCombo) === JSON.stringify(keyCombo);
+  })
 
-  // Replaces existing hotkey
-  if (shortcut) {
-    // if substance already has shortcut
-    const replaced = View.hotkeys.find(viewHotkey => viewHotkey.id === id);
-    if (replaced) {
-      View.hotkeys.splice(View.hotkeys.indexOf(replaced), 1);
-    }
-    shortcut.id = id;
+  // If another substance already has the keyCombo replace its
+  if (otherSubstance) otherSubstance.setKeyCombo(null);
 
-    console.log(`replaced key with ${shortcut.keyCombo.key}`);
-  } else {
-    // if substance already has shortcut
-    const replaced = View.hotkeys.find(viewHotkey => viewHotkey.id === id);
-    if (replaced) {
-      View.hotkeys.splice(View.hotkeys.indexOf(replaced), 1);
-    }
-
-    hotkey.id = id;
-    View.hotkeys.push(hotkey);
-    console.log("setting key", hotkey.keyCombo.key);
-  }
+  substanceS.find(substance => substance.id === id).setKeyCombo(keyCombo);
 
   render();
   window.addEventListener('keydown', runHotkey);
@@ -227,14 +192,14 @@ function runHotkey(e) {
     shift: e.shiftKey,
   }
 
-  // console.log("running key", keyCombo.key);
-
-  const hotKey = View.hotkeys.find(viewHotkeys => {
-    return JSON.stringify(viewHotkeys.keyCombo) === JSON.stringify(keyCombo);
+  const substance = substanceS.find(substance => {
+    return JSON.stringify(substance.keyCombo) === JSON.stringify(keyCombo);
   });
 
-  if (!hotKey) return;
-  increment(hotKey.id);
+
+  // If hotkey exists
+  if (!substance) return;
+  increment(substance);
 }
 
 /**
