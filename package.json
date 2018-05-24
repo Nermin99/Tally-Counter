@@ -14,8 +14,10 @@
     "http-server": "^0.11.1"
   },
   "scripts": {
-    "babel": "babel --presets es2015 app/main.js -o build/main.js",
-    "build": "npm run babel && cp app/index.html build/ && cp app/css/style build/css/",
+    "babel": "babel --presets es2015 app/main.js -o build/main.js && babel --presets es2015 app/classes/Substance.js -o build/classes/Substance.js",
+    "prebuild": "mkdir -p build && mkdir -p build/css && mkdir -p build/classes",
+    "copy": "cp app/index.html build/ && cp app/css/* build/css/",
+    "build": "npm run babel && npm run prebuild && npm run copy",
     "start": "http-server app/"
   },
   "babel": {
