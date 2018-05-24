@@ -8,6 +8,11 @@
   left: 100px;
 }
 
+#addRtext {
+  height: inherit;
+  line-height: inherit;
+}
+
 /* Custom bootstrap */
 .table {
   width: 80%;
@@ -44,9 +49,8 @@
 /* Custom fontawesome */
 .fa-plus-circle {
   color: green;
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   margin-right: 0.5rem;
-  line-height: 30%;
 }
 
 .fa-minus-circle {

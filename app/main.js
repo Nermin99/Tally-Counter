@@ -106,9 +106,9 @@ function render() {
             ).join("") }
 
               <tr>
-                <th class="pointer" colspan="3" onclick="addNew()">
+                <th class="pointer" colspan="3" >
                   <i class="fas fa-plus-circle"></i>
-                  <span id="addRow">Lägg Till Rad</span>
+                  <span id="addRtext">Lägg Till Rad</span>
                 </th>
                 <td colspan="3">
                   <input id="number" type="number" value="1">
