@@ -1,3 +1,18 @@
+#root {
+  display: inline-block;
+  width: 80%;
+  margin-right: 0;
+  margin-bottom: 10rem;
+}
+
+aside {
+  display: inline-block;
+}
+
+aside button {
+  display: block;
+}
+
 .hotkey, .pointer {
   cursor: pointer;
 }
@@ -8,22 +23,16 @@
   left: 100px;
 }
 
-#addRtext {
-  height: inherit;
-  line-height: inherit;
-}
-
 /* Custom bootstrap */
-.table {
-  width: 80%;
-  margin-bottom: 10rem;
+.table th, .table td {
+  vertical-align: middle;
 }
 
 .table tr {
   transition: all 0.07s ease;
 }
 
-.table td.id { width: 15%; }
+.table td.index { width: 15%; }
 .table td.substance { width: 30%; }
 .table td.hotkey { width: 30%; }
 .table td.zoom { width: 10%; }
@@ -37,20 +46,21 @@
   background-color: #fff;
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.075);
-}
-
 .table .thead-dark th {
   background-color: #6fad47;
   border-color: #6fad47;
 }
 
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
 /* Custom fontawesome */
 .fa-plus-circle {
   color: green;
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-right: 0.5rem;
+  vertical-align: inherit;
 }
 
 .fa-minus-circle {
