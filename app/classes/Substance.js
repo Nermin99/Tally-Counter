@@ -1,10 +1,10 @@
 class Substance {
   constructor(name, id, keyCombo = null, zoom = "100x") {
-    this.counter = 0;
+    this.name = name;
     this.id = id;
     this.keyCombo = keyCombo;
-    this.name = name;
     this.zoom = zoom;
+    this.counter = 0;
   }
 }
 

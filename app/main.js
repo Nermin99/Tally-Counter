@@ -112,13 +112,13 @@ function render() {
           ${ substanceS.map((substance, index) => {
             const hotkey = substance.keyCombo;
             return `
-              <tr data-id="${substance.id}">
-                <td class="index">${index}</td>
-                <td class="substance">${substance.name}</td>
-                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
-                <td class="zoom" contenteditable="true">${substance.zoom}</td>
-                <th class="counter">${substance.counter}</th>
-                <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
+              <tr data-id="${substance.id}" contenteditable=${true} oninput="saveEdit(this)">
+                <td class="index" contenteditable="false">${index}</td>
+                <td class="substance" contenteditable="inherit">${substance.name}</td>
+                <td class="hotkey" contenteditable="false" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
+                <td class="zoom" contenteditable="inherit" >${substance.zoom}</td>
+                <th class="counter" contenteditable="inherit">${substance.counter}</th>
+                <td contenteditable="false"> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
             ).join("") }
 
@@ -135,6 +135,16 @@ function render() {
         </table>`
 
   root.innerHTML = html;
+  save("substances", substanceS);
+}
+
+function saveEdit(e) {
+  const substance = substanceS[e.dataset.id];
+
+  substance.name = e.querySelector('.substance').innerHTML;
+  substance.zoom = e.querySelector('.zoom').innerHTML;
+  substance.counter = e.querySelector('.counter').innerHTML;
+
   save("substances", substanceS);
 }
 
