@@ -112,13 +112,13 @@ function render() {
           ${ substanceS.map((substance, index) => {
             const hotkey = substance.keyCombo;
             return `
-              <tr data-id="${substance.id}" contenteditable=${true} oninput="saveEdit(this)">
-                <td class="index" contenteditable="false">${index}</td>
-                <td class="substance" contenteditable="inherit">${substance.name}</td>
-                <td class="hotkey" contenteditable="false" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
-                <td class="zoom" contenteditable="inherit" >${substance.zoom}</td>
-                <th class="counter" contenteditable="inherit">${substance.counter}</th>
-                <td contenteditable="false"> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
+              <tr data-id="${substance.id}">
+                <td class="index">${index}</td>
+                <td class="name" contenteditable="true" oninput="saveEdit(this)">${substance.name}</td>
+                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
+                <td class="zoom" contenteditable="true" oninput="saveEdit(this)">${substance.zoom}</td>
+                <th class="counter" contenteditable="true" oninput="saveEdit(this)">${substance.counter}</th>
+                <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
             ).join("") }
 
@@ -139,11 +139,13 @@ function render() {
 }
 
 function saveEdit(e) {
-  const substance = substanceS[e.dataset.id];
+  console.log(e, document.activeElement);
+  console.log(e.classList.value);
 
-  substance.name = e.querySelector('.substance').innerHTML;
-  substance.zoom = e.querySelector('.zoom').innerHTML;
-  substance.counter = e.querySelector('.counter').innerHTML;
+  const substance = substanceS[e.parentElement.dataset.id];
+
+  var attribute = e.classList.value;
+  substance[attribute] = e.innerHTML;
 
   save("substances", substanceS);
 }
@@ -209,6 +211,8 @@ function settingHotkey(id, e) {
 }
 
 function runHotkey(e) {
+  if (e.target.contentEditable == "true") return;
+
   let key = String.fromCharCode(e.keyCode);
 
   // Special characters
