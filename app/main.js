@@ -25,28 +25,21 @@ function init() {
   substanceS = subs;
 
   if (typeof(Storage) !== "undefined") {
+    // loads the saved substances
     if (localStorage.getItem('substances') !== null) {
       substanceS = load("substances");
+    }
+
+    // saves new toggle variable for table size
+    if (localStorage.getItem('tSize') === null) {
+      save('tSize', "");
     }
   }
 
   render();
-  setup();
+  window.addEventListener('keydown', runHotkey);
 }
 init();
-
-function setup() {
-  const smButton = document.querySelector("#toggleSM");
-  const table = document.querySelector("#table");
-
-  smButton.addEventListener('click', () => {
-    if (table.classList.contains('table-sm')) {
-      table.classList.remove('table-sm');
-    } else {
-      table.classList.add('table-sm');
-    }
-  });
-}
 
 function increment(substance) {
   substance.counter++;
@@ -76,7 +69,7 @@ function removeOld(id) {
   render();
 }
 
-function animate(id, e) {
+function animate(id) {
   const substanceRow = document.querySelector(`[data-id="${id}"]`);
   if (substanceRow.dataset.animating) return; // don't add another animation if current one is running
 
@@ -107,7 +100,7 @@ function render() {
   }).reverse(); */
 
   const html = `
-        <table id="table" class="table table-striped table-bordered table-hover">
+        <table id="table" class="table table-striped table-bordered table-hover ${load('tSize')}">
           <thead class="thead-dark">
             <th scope="col">#</th>
             <th scope="col">Ämne</th>
@@ -244,16 +237,6 @@ function runHotkey(e) {
 /**
  * save & load
  */
-
-function test() {
-  console.table(substanceS);
-
-  const sub = JSON.stringify(substanceS);
-  console.log(sub);
-
-  save("substances", substanceS);
-}
-
 function save(key, value) {
   try {
     const data = JSON.stringify(value);
@@ -268,5 +251,21 @@ function load(key) {
     return JSON.parse(localStorage.getItem(key));
   } catch (error) {
     console.error("CANT LOAD", error);
+  }
+}
+
+/**
+ * Aside buttons
+ */
+
+function toggleTableSize() {
+  load('tSize') === "" ? save('tSize', "table-sm") : save('tSize', "");
+  render();
+}
+
+function resetTable() {
+  if (confirm('Är du säker på att du vill återställa tabellen?')) {
+    localStorage.clear();
+    location.reload();
   }
 }
