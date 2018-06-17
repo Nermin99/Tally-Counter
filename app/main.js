@@ -37,6 +37,7 @@ function init() {
   }
 
   render();
+  initLoadFromFile();
   window.addEventListener('keydown', runHotkey);
 }
 init();
@@ -139,12 +140,9 @@ function render() {
 }
 
 function saveEdit(e) {
-  console.log(e, document.activeElement);
-  console.log(e.classList.value);
+  const substance = substanceS.find(sub => sub.id == e.parentElement.dataset.id);
 
-  const substance = substanceS[e.parentElement.dataset.id];
-
-  var attribute = e.classList.value;
+  const attribute = e.classList.value;
   substance[attribute] = e.innerHTML;
 
   save("substances", substanceS);
@@ -199,15 +197,12 @@ function settingHotkey(id, e) {
   // If another substance already has the keyCombo replace its
   if (otherSubstance) otherSubstance.keyCombo = null;
 
-  const sub = substanceS.find(substance => substance.id === id).keyCombo = keyCombo;
+  // TODO unclear
+  // const sub = substanceS.find(substance => substance.id === id).keyCombo = keyCombo;
+  substanceS.find(substance => substance.id === id).keyCombo = keyCombo;
 
   render();
   window.addEventListener('keydown', runHotkey);
-
-  /* window.addEventListener('keydown', (e) => {
-    runHotkey(e);
-    save("substances", substanceS);
-  }); */
 }
 
 function runHotkey(e) {
@@ -266,6 +261,48 @@ function load(key) {
   } catch (error) {
     console.error("CANT LOAD", error);
   }
+}
+
+function saveToFile() {
+  var data = JSON.stringify(substanceS);
+  var a = document.createElement("a");
+  var file = new Blob([data], {type: "application/json"});
+  a.href = URL.createObjectURL(file);
+  a.download = "tabell.json";
+  a.click();
+}
+
+function initLoadFromFile() {
+  let reader = new FileReader();
+  const fileInput = document.querySelector("#fileInput");
+
+  fileInput.addEventListener('change', fileInputChange);
+
+  function fileInputChange() {
+    // Only allow .json
+    if (fileInput.files[0].type != "application/json") {
+      alert("Fel filtyp!");
+      return;
+    }
+
+    // Check if file uploaded pre reader run
+    if (fileInput.files.length > 0) reader.readAsBinaryString(fileInput.files[0]);
+  }
+
+  reader.onload = function () {
+    try {
+      substanceS = JSON.parse(decodeURIComponent(escape(reader.result))); // decode UTF8 and parse result
+      render();
+    } catch (error) {
+      alert("Ett fel inträffade");
+      console.log(error);
+    }
+  }
+}
+
+function loadFromFile() {
+  const fileInput = document.querySelector("#fileInput");
+  fileInput.click();
 }
 
 /**
