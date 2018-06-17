@@ -151,7 +151,6 @@ function saveEdit(e) {
 /**
  * Hotkeys
  */
-
 function assignHotkey(id) {
   let currentElem = document.querySelector(`[data-id='${id}']`);
   currentElem.querySelector(".hotkey").innerText = "select key please";
@@ -197,15 +196,15 @@ function settingHotkey(id, e) {
   // If another substance already has the keyCombo replace its
   if (otherSubstance) otherSubstance.keyCombo = null;
 
-  // TODO unclear
-  // const sub = substanceS.find(substance => substance.id === id).keyCombo = keyCombo;
-  substanceS.find(substance => substance.id === id).keyCombo = keyCombo;
+  const substance = substanceS.find(substance => substance.id === id);
+  substance.keyCombo = keyCombo;
 
   render();
   window.addEventListener('keydown', runHotkey);
 }
 
 function runHotkey(e) {
+  // Don't run on input
   if (e.target.contentEditable == "true") return;
 
   let key = String.fromCharCode(e.keyCode);
@@ -264,9 +263,10 @@ function load(key) {
 }
 
 function saveToFile() {
-  var data = JSON.stringify(substanceS);
-  var a = document.createElement("a");
-  var file = new Blob([data], {type: "application/json"});
+  const data = JSON.stringify(substanceS);
+  let a = document.createElement("a");
+  const file = new Blob([data], {type: "application/json"});
+
   a.href = URL.createObjectURL(file);
   a.download = prompt("Ange namn på filen");
   a.click();
@@ -319,4 +319,44 @@ function resetTable() {
     localStorage.clear();
     location.reload();
   }
+}
+
+function exportExcel() {
+  var table_text = "<table border='2px'><tr bgcolor='#87AFC6'>";
+  var table = document.getElementById('table'); // id of table
+
+  /* Stripping table */
+  table.rows[0].deleteCell(0); // Remove #
+  table.rows[0].deleteCell(1); // Remove Hotkey
+
+  for (let i = 1; i < table.rows.length - 1; i++) {
+    table.rows[i].deleteCell(0); // #
+    table.rows[i].deleteCell(1); // Hotkey
+    table.rows[i].deleteCell(3); // -
+  }
+  table.deleteRow(table.rows.length - 1); // Bottom Row
+  table.rows[0].cells[table.rows[0].cells.length - 1].colSpan = 1; // Colspan on "Antal"
+
+  /* Generate table text */
+  for (let i = 0; i < table.rows.length; i++) {
+    table_text += table.rows[i].innerHTML + "</tr>";
+    // table_text += "</tr>";
+  }
+
+  table_text += "</table>";
+
+  var ua = window.navigator.userAgent;
+  var msie = ua.indexOf("MSIE ");
+
+  if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) { // If Internet Explorer
+    txtArea1.document.open("txt/html", "replace");
+    txtArea1.document.write(table_text);
+    txtArea1.document.close();
+    txtArea1.focus();
+    sa = txtArea1.document.execCommand("SaveAs", true, "Say Thanks to Sumit.xls");
+  } else { // other browser not tested on IE 11
+    sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(table_text));
+  }
+
+  return (sa);
 }

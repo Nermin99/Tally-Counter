@@ -23,13 +23,9 @@
     <br>
     <button onclick="loadFromFile()">Ladda från fil</button>
     <input type="file" id="fileInput" style="display:none">
-    <!-- <button id="export">Exportera tabell</button> -->
-
-    <!-- buttons
-    * Toggle table-sm
-    * Save
-    * Export
-    -->
+    <br>
+    <button id="btnExport" onclick="exportExcel();">Exportera</button>
+    <iframe id="txtArea1" style="display:none"></iframe>
   </aside>
 
   <script src="main.js"></script>
