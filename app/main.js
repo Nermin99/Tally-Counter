@@ -268,7 +268,7 @@ function saveToFile() {
   var a = document.createElement("a");
   var file = new Blob([data], {type: "application/json"});
   a.href = URL.createObjectURL(file);
-  a.download = "tabell.json";
+  a.download = prompt("Ange namn på filen");
   a.click();
 }
 
