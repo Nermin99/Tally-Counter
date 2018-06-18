@@ -321,47 +321,6 @@ function resetTable() {
   }
 }
 
-// function exportExcel() {
-//   var body = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\"><head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"></head><body>`; 
-//   var table_text = body + "<table border='2px'><tr bgcolor='#87AFC6'>";
-//   var table = document.getElementById('table'); // id of table
-
-//   /* Stripping table */
-//   table.rows[0].deleteCell(0); // Remove #
-//   table.rows[0].deleteCell(1); // Remove Hotkey
-
-//   for (let i = 1; i < table.rows.length - 1; i++) {
-//     table.rows[i].deleteCell(0); // #
-//     table.rows[i].deleteCell(1); // Hotkey
-//     table.rows[i].deleteCell(3); // -
-//   }
-//   table.deleteRow(table.rows.length - 1); // Bottom Row
-//   table.rows[0].cells[table.rows[0].cells.length - 1].colSpan = 1; // Colspan on "Antal"
-
-//   /* Generate table text */
-//   for (let i = 0; i < table.rows.length; i++) {
-//     table_text += unescape(encodeURIComponent(table.rows[i].innerHTML)) + "</tr>";
-//     // table_text += "</tr>";
-//   }
-
-//   table_text += "</table></body></html>";
-
-//   var ua = window.navigator.userAgent;
-//   var msie = ua.indexOf("MSIE ");
-
-//   if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) { // If Internet Explorer
-//     txtArea1.document.open("txt/html", "replace");
-//     txtArea1.document.write(table_text);
-//     txtArea1.document.close();
-//     txtArea1.focus();
-//     sa = txtArea1.document.execCommand("SaveAs", true, "Say Thanks to Sumit.xls");
-//   } else { // other browser not tested on IE 11
-//     sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(table_text));
-//   }
-
-//   return (sa);
-// }
-
 function exportExcel(filename = "filnamn.csv") {
   const divider = ";";
   let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
