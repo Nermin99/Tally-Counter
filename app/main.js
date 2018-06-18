@@ -268,7 +268,10 @@ function saveToFile() {
   const file = new Blob([data], {type: "application/json"});
 
   a.href = URL.createObjectURL(file);
-  a.download = prompt("Ange namn på filen");
+  // Save filename or cancel
+  if (a.download = prompt("Ange namn på filen", "filnamn")) {} else {
+    return;
+  }
   a.click();
 }
 
@@ -322,8 +325,11 @@ function resetTable() {
 }
 
 function exportExcel() {
-  let filename = "tabell";
-  filename = (temp = prompt("Ange namn på filen")) ? temp : filename;
+  let filename;
+  // Save filename or cancel
+  if (filename = prompt("Ange namn på filen", "filnamn")) {} else {
+    return;
+  }
   filename += ".csv";
 
   const divider = ";";
@@ -333,14 +339,14 @@ function exportExcel() {
     return `${substance.name + divider + substance.zoom + divider + substance.counter}\r\n`;
   }).join("");
 
-  var blob = new Blob([csv], { type: 'text;charset=UTF-8;' });
+  const blob = new Blob([csv], { type: 'text;charset=UTF-8;' });
   if (navigator.msSaveBlob) { // IE 10+
       navigator.msSaveBlob(blob, filename);
   } else {
-      var link = document.createElement("a");
+      let link = document.createElement("a");
       if (link.download !== undefined) { // feature detection
           // Browsers that support HTML5 download attribute
-          var url = URL.createObjectURL(blob);
+          const url = URL.createObjectURL(blob);
           link.setAttribute("href", url);
           link.setAttribute("download", filename);
           link.style.visibility = 'hidden';
