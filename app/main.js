@@ -284,15 +284,15 @@ function initLoadFromFile() {
       alert("Fel filtyp!");
       return;
     }
-
     // Check if file uploaded pre reader run
-    if (fileInput.files.length > 0) reader.readAsBinaryString(fileInput.files[0]);
+    if (fileInput.files.length > 0) reader.readAsBinaryString(fileInput.files[fileInput.files.length - 1]);
   }
 
   reader.onload = function () {
     try {
       substanceS = JSON.parse(decodeURIComponent(escape(reader.result))); // decode UTF8 and parse result
       render();
+      location.reload();
     } catch (error) {
       alert("Ett fel inträffade");
       console.log(error);
@@ -321,10 +321,14 @@ function resetTable() {
   }
 }
 
-function exportExcel(filename = "filnamn.csv") {
+function exportExcel() {
+  let filename = "tabell";
+  filename = (temp = prompt("Ange namn på filen")) ? temp : filename;
+  filename += ".csv";
+
   const divider = ";";
   let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
-    
+
   csv += substanceS.map(substance => {
     return `${substance.name + divider + substance.zoom + divider + substance.counter}\r\n`;
   }).join("");
