@@ -13,14 +13,14 @@ var substanceS = [];
 
 function init() {
   let subs = [
-    new Substance("Vitsippa", 0),
-    new Substance("Blåsippa", 1),
-    new Substance("Ros", 2),
-    new Substance("Vass", 3),
-    new Substance("Säv", 4),
-    new Substance("Kaveldun", 5),
-    new Substance("Gul", 6),
-    new Substance("Natearter", 7),
+    new Substance(0, "Vitsippa"),
+    new Substance(1, "Blåsippa"),
+    new Substance(2, "Ros"),
+    new Substance(3, "Vass"),
+    new Substance(4, "Säv"),
+    new Substance(5, "Kaveldun"),
+    new Substance(6, "Gul"),
+    new Substance(7, "Natearter"),
   ];
   substanceS = subs;
 
@@ -28,11 +28,6 @@ function init() {
     // loads the saved substances
     if (localStorage.getItem('substances') !== null) {
       substanceS = load("substances");
-    }
-
-    // saves new toggle variable for table size
-    if (localStorage.getItem('tSize') === null) {
-      save('tSize', "");
     }
   }
 
@@ -43,21 +38,28 @@ function init() {
 init();
 
 function increment(substance) {
-  substance.counter++;
+  substance.quantity++;
   animate(substance.id);
 }
 
 function decrement(substance) {
-  if (substance.counter == 0) return;
-    substance.counter--;
+  if (substance.quantity == 0) return;
+    substance.quantity--;
   render();
 }
 
 function addNew() {
   const n = document.querySelector('#number').value;
 
+  // empty table
+  if (substanceS.length == 0) {
+    substanceS.push(new Substance(0));
+    render();
+    return;
+  }
+
   for (let i = 0; i < n; i++) {
-    const substance = new Substance("", substanceS[substanceS.length-1].id + 1);
+    const substance = new Substance(substanceS[substanceS.length-1].id + 1);
     substanceS.push(substance);
   }
   render();
@@ -94,41 +96,55 @@ function render() {
   }
 
   /* substanceS.sort((a, b) => {
-    if (a.counter == b.counter) return 0;
-    if (a.counter < b.counter) return -1;
-    if (a.counter > b.counter) return 1;
+    if (a.quantity == b.quantity) return 0;
+    if (a.quantity < b.quantity) return -1;
+    if (a.quantity > b.quantity) return 1;
 
   }).reverse(); */
 
   const html = `
         <table id="table" class="table table-striped table-bordered table-hover ${load('tSize')}">
           <thead class="thead-dark">
-            <th scope="col">#</th>
-            <th scope="col">Ämne</th>
-            <th scope="col">Hotkey</th>
-            <th scope="col">Zoom</th>
-            <th scope="col" colspan="2">Antal</th>
+            <th scope="col">No</th>
+            <th scope="col">Magn x</th>
+            <th scope="col">Count part</th>
+            <th scope="col">Tally key</th>
+            <th scope="col">Species</th>
+            <th scope="col">C/kol/100µ</th>
+            <th scope="col">No count</th>
+            <th scope="col">Size class</th>
+            <th scope="col">Cell vol µm3</th>
+            <th scope="col">Group</th>
+            <th scope="col"></th>
+            <th scope="col" colspan="2"></th>
           </thead>
           <tbody>
-          ${ substanceS.map((substance, index) => {
-            const hotkey = substance.keyCombo;
+          ${ substanceS.map((substance, id) => {
+            const hotkey = substance.tallyKey;
             return `
               <tr data-id="${substance.id}">
-                <td class="index">${index}</td>
-                <td class="name" contenteditable="true" oninput="saveEdit(this)">${substance.name}</td>
-                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
-                <td class="zoom" contenteditable="true" oninput="saveEdit(this)">${substance.zoom}</td>
-                <th class="counter" contenteditable="true" oninput="saveEdit(this)">${substance.counter}</th>
+                <td class="id">${id}</td>
+                <td class="magnification" contenteditable="true" oninput="saveEdit(this)">${substance.magnification}</td>
+                <td class="countPart" contenteditable="true" oninput="saveEdit(this)">${substance.countPart}</td>
+                <td class="tallyKey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
+                <td class="species" contenteditable="true" oninput="saveEdit(this)">${substance.species}</td>
+                <td class="cKoll100" contenteditable="true" oninput="saveEdit(this)">${substance.cKoll100}</td>
+                <th class="quantity" contenteditable="true" oninput="saveEdit(this)">${substance.quantity}</th>
+                <td class="sizeClass" contenteditable="true" oninput="saveEdit(this)">${substance.sizeClass}</td>
+                <td class="cellvolume" contenteditable="true" oninput="saveEdit(this)">${substance.cellvolume}</td>
+                <td class="group" contenteditable="true" oninput="saveEdit(this)">${substance.group}</td>
+                <td class="alt1" contenteditable="true" oninput="saveEdit(this)">${substance.alt1}</td>
+                <td class="alt2" contenteditable="true" oninput="saveEdit(this)">${substance.alt2}</td>
                 <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
             ).join("") }
 
               <tr>
-                <th class="pointer" colspan="3" onclick="addNew()">
+                <th class="pointer" colspan="9" onclick="addNew()">
                   <i class="fas fa-plus-circle"></i>
                   <span>Lägg Till Rad</span>
                 </th>
-                <td colspan="3">
+                <td colspan="4">
                   <input id="number" type="number" value="1">
                 </td>
               </tr>
@@ -142,6 +158,7 @@ function render() {
 function saveEdit(e) {
   const substance = substanceS.find(sub => sub.id == e.parentElement.dataset.id);
 
+  // class names must === Substance property
   const attribute = e.classList.value;
   substance[attribute] = e.innerHTML;
 
@@ -153,7 +170,7 @@ function saveEdit(e) {
  */
 function assignHotkey(id) {
   let currentElem = document.querySelector(`[data-id='${id}']`);
-  currentElem.querySelector(".hotkey").innerText = "select key please";
+  currentElem.querySelector(".tallyKey").innerText = "select key";
 
   window.removeEventListener('keyup', settingHotkey);
   window.addEventListener('keyup', (e) => {settingHotkey(id, e)}, { once:true });
@@ -163,41 +180,17 @@ function assignHotkey(id) {
 function settingHotkey(id, e) {
   e.preventDefault();
 
-  let key = String.fromCharCode(e.keyCode);
-
-  // Special characters
-  if (String.fromCharCode(e.keyCode) != e.key.toUpperCase()) {
-    key = `${key} / ${e.key}`;
-  } else {
-    // Å Ä Ö
-    switch (e.keyCode) {
-      case 219:
-        key = "Å";
-        break;
-      case 222:
-        key = "Ä";
-        break;
-      case 186:
-        key = "Ö"
-    }
-  }
-
-  const keyCombo = {
-    key: key,
-    alt: e.altKey,
-    ctrl: e.ctrlKey,
-    shift: e.shiftKey
-  }
+  const keyCombo = getKeyCombo(e);
 
   const otherSubstance = substanceS.find(substance => {
-    return JSON.stringify(substance.keyCombo) === JSON.stringify(keyCombo);
+    return JSON.stringify(substance.tallyKey) === JSON.stringify(keyCombo);
   })
 
   // If another substance already has the keyCombo replace its
-  if (otherSubstance) otherSubstance.keyCombo = null;
+  if (otherSubstance) otherSubstance.tallyKey = null;
 
   const substance = substanceS.find(substance => substance.id === id);
-  substance.keyCombo = keyCombo;
+  substance.tallyKey = keyCombo;
 
   render();
   window.addEventListener('keydown', runHotkey);
@@ -207,34 +200,10 @@ function runHotkey(e) {
   // Don't run on input
   if (e.target.contentEditable == "true") return;
 
-  let key = String.fromCharCode(e.keyCode);
-
-  // Special characters
-  if (String.fromCharCode(e.keyCode) != e.key.toUpperCase()) {
-    key = `${key} / ${e.key}`;
-  } else {
-    // Å Ä Ö
-    switch (e.keyCode) {
-      case 219:
-        key = "Å";
-        break;
-      case 222:
-        key = "Ä";
-        break;
-      case 186:
-        key = "Ö"
-    }
-  }
-
-  const keyCombo = {
-    key: key,
-    alt: e.altKey,
-    ctrl: e.ctrlKey,
-    shift: e.shiftKey,
-  }
+  const keyCombo = getKeyCombo(e);
 
   const substance = substanceS.find(substance => {
-    return JSON.stringify(substance.keyCombo) === JSON.stringify(keyCombo);
+    return JSON.stringify(substance.tallyKey) === JSON.stringify(keyCombo);
   });
 
   // If hotkey exists
@@ -242,26 +211,45 @@ function runHotkey(e) {
   increment(substance);
 }
 
+function getKeyCombo(e) {
+  let key = String.fromCharCode(e.keyCode);
+
+  // Special characters
+  if (String.fromCharCode(e.keyCode) != e.key.toUpperCase()) {
+    if (e.key == "å" || e.key == "ä" || e.key == "ö" || e.key == "Å" || e.key == "Ä" || e.key == "Ö") {
+      key = e.key.toUpperCase()
+    } else {
+      key = `${key} / ${e.key}`;
+    }
+  } else {
+    // Å Ä Ö Space
+    switch (e.keyCode) {
+      // case 219:
+      //   key = "Å";
+      //   break;
+      // case 222:
+      //   key = "Ä";
+      //   break;
+      // case 186:
+      //   key = "Ö";
+      //   break;
+      case 32:
+        key = "SPACE"
+    }
+  }
+
+  return {
+    key: key,
+    alt: e.altKey,
+    ctrl: e.ctrlKey,
+    shift: e.shiftKey
+  }
+  // return keyCombo;
+}
+
 /**
- * save & load
+ * save & load - file
  */
-function save(key, value) {
-  try {
-    const data = JSON.stringify(value);
-    localStorage.setItem(key, data);
-  }  catch(error) {
-    console.error("CANT SAVE", error);
-  }
-}
-
-function load(key) {
-  try {
-    return JSON.parse(localStorage.getItem(key));
-  } catch (error) {
-    console.error("CANT LOAD", error);
-  }
-}
-
 function saveToFile() {
   const data = JSON.stringify(substanceS);
   let a = document.createElement("a");
@@ -311,10 +299,21 @@ function loadFromFile() {
 /**
  * Aside buttons
  */
+function save(key, value) {
+  try {
+    const data = JSON.stringify(value);
+    localStorage.setItem(key, data);
+  }  catch(error) {
+    console.error("CANT SAVE", error);
+  }
+}
 
-function toggleTableSize() {
-  load('tSize') === "" ? save('tSize', "table-sm") : save('tSize', "");
-  render();
+function load(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key));
+  } catch (error) {
+    console.error("CANT LOAD", error);
+  }
 }
 
 function resetTable() {
@@ -336,7 +335,7 @@ function exportExcel() {
   let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
 
   csv += substanceS.map(substance => {
-    return `${substance.name + divider + substance.zoom + divider + substance.counter}\r\n`;
+    return `${substance.species + divider + substance.magnification + divider + substance.quantity}\r\n`;
   }).join("");
 
   const blob = new Blob([csv], { type: 'text;charset=UTF-8;' });

@@ -1,10 +1,17 @@
 class Substance {
-  constructor(name, id, keyCombo = null, zoom = "100x") {
-    this.name = name;
+  constructor(id, species = "") {
     this.id = id;
-    this.keyCombo = keyCombo;
-    this.zoom = zoom;
-    this.counter = 0;
+    this.magnification = "100";
+    this.countPart = "";
+    this.tallyKey = null;
+    this.species = species;
+    this.cKoll100 = "";
+    this.quantity = 0;
+    this.sizeClass = "";
+    this.cellvolume = "";
+    this.group = "";
+    this.alt1 = "";
+    this.alt2 = "";
   }
 }
 
