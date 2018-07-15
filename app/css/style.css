@@ -1,19 +1,21 @@
 #root {
   display: inline-block;
-  width: 80%;
+  width: 97%;
   margin-right: 0;
-  margin-bottom: 10rem;
+  margin-bottom: 1rem;
 }
 
 aside {
   display: inline-block;
+  width: 100%;
 }
 
 aside button {
-  display: block;
+  display: inline-block;
+  margin-right: 1rem;
 }
 
-.hotkey, .pointer {
+.tallyKey, .pointer {
   cursor: pointer;
 }
 
@@ -32,11 +34,18 @@ aside button {
   transition: all 0.07s ease;
 }
 
-.table td.index { width: 15%; }
-.table td.substance { width: 30%; }
-.table td.hotkey { width: 30%; }
-.table td.zoom { width: 10%; }
-.table td.counter { width: 15%; }
+.table .id { width: 5%; }
+.table .magnification { width: 6%; }
+.table .countPart { width: 10%; }
+.table .tallyKey { width: 8%; }
+.table .species { width: 15%; }
+.table .cKoll100 { width: 10%; }
+.table .quantity { width: 6%; }
+.table .sizeClass { width: 10%; }
+.table .cellvolume { width: 8%; }
+.table .group { width: 8%; }
+.table .alt1 { width: 8%; }
+.table .alt2 { width: 8%; }
 
 .table-striped tbody tr:nth-of-type(odd) {
   background-color: #e1efda;
