@@ -102,8 +102,12 @@ function render() {
 
   }).reverse(); */
 
+
+
+
+
   const html = `
-        <table id="table" class="table table-striped table-bordered table-hover ${load('tSize')}">
+        <table id="table" class="table table-striped table-bordered table-hover">
           <thead class="thead-dark">
             <th scope="col">No</th>
             <th scope="col">Magn x</th>
@@ -121,10 +125,25 @@ function render() {
           <tbody>
           ${ substanceS.map((substance, id) => {
             const hotkey = substance.tallyKey;
+            const magnificationValue = {
+              one: "100",
+              two: "150",
+              three: "200",
+              four: "250"
+            }
             return `
               <tr data-id="${substance.id}">
                 <td class="id">${id}</td>
-                <td class="magnification" contenteditable="true" oninput="saveEdit(this)">${substance.magnification}</td>
+                <td class="magnification" oninput="saveEdit(this)">
+                  <input list="magnification-list" contenteditable="true" value="${substance.magnification}">
+
+                  <datalist id="magnification-list">
+                    <option value="${magnificationValue.one}">
+                    <option value="${magnificationValue.two}">
+                    <option value="${magnificationValue.three}">
+                    <option value="${magnificationValue.four}">
+                  </datalist>
+                </td>
                 <td class="countPart" contenteditable="true" oninput="saveEdit(this)">${substance.countPart}</td>
                 <td class="tallyKey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
                 <td class="species" contenteditable="true" oninput="saveEdit(this)">${substance.species}</td>
@@ -158,9 +177,11 @@ function render() {
 function saveEdit(e) {
   const substance = substanceS.find(sub => sub.id == e.parentElement.dataset.id);
 
-  // class names must === Substance property
-  const attribute = e.classList.value;
-  substance[attribute] = e.innerHTML;
+  const input = e.querySelector("td input"); // check if <td> has an <input>
+
+  const attribute = e.classList.value; // class names must === Substance property
+
+  substance[attribute] = input ? input.value : e.innerHTML; // <input> vs. <td>
 
   save("substances", substanceS);
 }
@@ -244,7 +265,6 @@ function getKeyCombo(e) {
     ctrl: e.ctrlKey,
     shift: e.shiftKey
   }
-  // return keyCombo;
 }
 
 /**
@@ -316,13 +336,6 @@ function load(key) {
   }
 }
 
-function resetTable() {
-  if (confirm('Är du säker på att du vill återställa tabellen?')) {
-    localStorage.clear();
-    location.reload();
-  }
-}
-
 function exportExcel() {
   let filename;
   // Save filename or cancel
@@ -353,5 +366,21 @@ function exportExcel() {
           link.click();
           document.body.removeChild(link);
       }
+  }
+}
+
+function resetTable() {
+  if (confirm('Är du säker på att du vill återställa tabellen?')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+function resetQuantityColumn() {
+  if (confirm('Är du säker på att du vill återställa antal-kolumnen?')) {
+    substanceS.forEach(substance => {
+      substance.quantity = 0;
+    });
+    render();
   }
 }
