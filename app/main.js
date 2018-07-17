@@ -43,7 +43,7 @@ function increment(substance) {
 }
 
 function decrement(substance) {
-  if (substance.quantity == 0) return;
+  if (substance.quantity <= 0) return;
     substance.quantity--;
   render();
 }
@@ -102,10 +102,6 @@ function render() {
 
   }).reverse(); */
 
-
-
-
-
   const html = `
         <table id="table" class="table table-striped table-bordered table-hover">
           <thead class="thead-dark">
@@ -125,30 +121,30 @@ function render() {
           <tbody>
           ${ substanceS.map((substance, id) => {
             const hotkey = substance.tallyKey;
-            const magnificationValue = {
-              one: "100",
-              two: "150",
-              three: "200",
-              four: "250"
-            }
             return `
               <tr data-id="${substance.id}">
                 <td class="id">${id}</td>
                 <td class="magnification" oninput="saveEdit(this)">
-                  <input list="magnification-list" contenteditable="true" value="${substance.magnification}">
+                  <input list="magnification-list" contenteditable="true" type="number" value="${substance.magnification}">
 
                   <datalist id="magnification-list">
-                    <option value="${magnificationValue.one}">
-                    <option value="${magnificationValue.two}">
-                    <option value="${magnificationValue.three}">
-                    <option value="${magnificationValue.four}">
+                    <option value="100">
+                    <option value="200">
+                    <option value="400">
                   </datalist>
                 </td>
                 <td class="countPart" contenteditable="true" oninput="saveEdit(this)">${substance.countPart}</td>
-                <td class="tallyKey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
+                <td class="tallyKey" onclick="assignHotkey(${substance.id})">
+                  ${hotkey ? hotkey.shift ? "shift +" : "" : ""}
+                  ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""}
+                  ${hotkey ? hotkey.alt ? "alt +" : "" : ""}
+                  ${hotkey ? hotkey.key : 'no key'}
+                </td>
                 <td class="species" contenteditable="true" oninput="saveEdit(this)">${substance.species}</td>
                 <td class="cKoll100" contenteditable="true" oninput="saveEdit(this)">${substance.cKoll100}</td>
-                <th class="quantity" contenteditable="true" oninput="saveEdit(this)">${substance.quantity}</th>
+                <td class="quantity" contenteditable="true" oninput="saveEdit(this)">
+                  <input contenteditable="true" type="number" value="${substance.quantity}">
+                </td>
                 <td class="sizeClass" contenteditable="true" oninput="saveEdit(this)">${substance.sizeClass}</td>
                 <td class="cellvolume" contenteditable="true" oninput="saveEdit(this)">${substance.cellvolume}</td>
                 <td class="group" contenteditable="true" oninput="saveEdit(this)">${substance.group}</td>

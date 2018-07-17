@@ -1,7 +1,7 @@
 class Substance {
   constructor(id, species = "") {
     this.id = id;
-    this.magnification = "100";
+    this.magnification = "";
     this.countPart = "";
     this.tallyKey = null;
     this.species = species;
