@@ -9,7 +9,11 @@ const root = document.querySelector("#root");
 /**
  * Objects
  */
+var tallyCounter = {};
+
 var substanceS = [];
+
+var columnData = {};
 
 function init() {
   let subs = [
@@ -24,11 +28,25 @@ function init() {
   ];
   substanceS = subs;
 
+  columnData = {
+    alt1: "",
+    alt2: ""
+  }
+
   if (typeof(Storage) !== "undefined") {
     // loads the saved substances
     if (localStorage.getItem('substances') !== null) {
       substanceS = load("substances");
     }
+
+    if (localStorage.getItem('columnData') !== null) {
+      columnData = load("columnData");
+    }
+  }
+
+  tallyCounter = {
+    substances: substanceS,
+    columnData: columnData
   }
 
   render();
@@ -115,8 +133,8 @@ function render() {
             <th scope="col">Size class</th>
             <th scope="col">Cell vol µm3</th>
             <th scope="col">Group</th>
-            <th scope="col"></th>
-            <th scope="col" colspan="2"></th>
+            <th scope="col" class="alt1" contenteditable="true" oninput="saveColumnData(this)">${columnData.alt1}</th>
+            <th scope="col" class="alt2" contenteditable="true" oninput="saveColumnData(this)" colspan="2">${columnData.alt2}</th>
           </thead>
           <tbody>
           ${ substanceS.map((substance, id) => {
@@ -168,18 +186,28 @@ function render() {
 
   root.innerHTML = html;
   save("substances", substanceS);
+  save("columnData", columnData);
 }
 
 function saveEdit(e) {
   const substance = substanceS.find(sub => sub.id == e.parentElement.dataset.id);
-
-  const input = e.querySelector("td input"); // check if <td> has an <input>
-
+  // debugger
+  const input = e.querySelector("input"); // check cell element has an <input>
   const attribute = e.classList.value; // class names must === Substance property
-
-  substance[attribute] = input ? input.value : e.innerHTML; // <input> vs. <td>
+  substance[attribute] = input ? input.value : e.innerHTML; // <input> vs. cell
 
   save("substances", substanceS);
+}
+
+function saveColumnData(e) {
+  const alternative = e.classList.value;
+  if (alternative == "alt1") {
+    columnData.alt1 = e.innerHTML;
+  } else if (alternative == "alt2"){
+    columnData.alt2 = e.innerHTML;
+  }
+
+  save("columnData", columnData);
 }
 
 /**
@@ -267,7 +295,13 @@ function getKeyCombo(e) {
  * save & load - file
  */
 function saveToFile() {
-  const data = JSON.stringify(substanceS);
+  // update tallyCounter
+  tallyCounter = {
+    substances: substanceS,
+    columnData: columnData
+  }
+
+  const data = JSON.stringify(tallyCounter);
   let a = document.createElement("a");
   const file = new Blob([data], {type: "application/json"});
 
@@ -297,7 +331,9 @@ function initLoadFromFile() {
 
   reader.onload = function () {
     try {
-      substanceS = JSON.parse(decodeURIComponent(escape(reader.result))); // decode UTF8 and parse result
+      tallyCounter = JSON.parse(decodeURIComponent(escape(reader.result))); // decode UTF8 and parse result
+      substanceS = tallyCounter.substances;
+      columnData = tallyCounter.columnData;
       render();
       location.reload();
     } catch (error) {
@@ -341,10 +377,12 @@ function exportExcel() {
   filename += ".csv";
 
   const divider = ";";
-  let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
+  // let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
+  let csv = `\ufeffMagn x${divider}Count part${divider}Species${divider}C/kol/100µ${divider}No count${divider}Size class${divider}Cell vol µm3${divider}Group${divider}alt1${divider}alt2\r\n`;
 
   csv += substanceS.map(substance => {
-    return `${substance.species + divider + substance.magnification + divider + substance.quantity}\r\n`;
+    // return `${substance.species + divider + substance.magnification + divider + substance.quantity}\r\n`;
+    return `${substance.magnification + divider + substance.countPart + divider + substance.species + divider + substance.cKoll100 + divider + substance.quantity + divider + substance.sizeClass + divider + substance.cellvolume + divider + substance.group + divider + substance.alt1 + divider + substance.alt2}\r\n`;
   }).join("");
 
   const blob = new Blob([csv], { type: 'text;charset=UTF-8;' });
