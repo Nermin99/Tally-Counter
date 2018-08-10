@@ -1,5 +1,3 @@
-// import Substance from './classes/Substance';
-
 /**
  * Global
  * NODEs
@@ -33,8 +31,8 @@ function init() {
     alt2: ""
   }
 
+  // loads saved substances & column data
   if (typeof(Storage) !== "undefined") {
-    // loads the saved substances
     if (localStorage.getItem('substances') !== null) {
       substanceS = load("substances");
     }
@@ -113,13 +111,6 @@ function render() {
     return; // current
   }
 
-  /* substanceS.sort((a, b) => {
-    if (a.quantity == b.quantity) return 0;
-    if (a.quantity < b.quantity) return -1;
-    if (a.quantity > b.quantity) return 1;
-
-  }).reverse(); */
-
   const html = `
         <table id="table" class="table table-striped table-bordered table-hover">
           <thead class="thead-dark">
@@ -173,11 +164,11 @@ function render() {
             ).join("") }
 
               <tr>
-                <th class="pointer" colspan="9" onclick="addNew()">
+                <th class="pointer" colspan="8" onclick="addNew()">
                   <i class="fas fa-plus-circle"></i>
                   <span>Lägg Till Rad</span>
                 </th>
-                <td colspan="4">
+                <td colspan="5">
                   <input id="number" type="number" value="1">
                 </td>
               </tr>
@@ -191,9 +182,10 @@ function render() {
 
 function saveEdit(e) {
   const substance = substanceS.find(sub => sub.id == e.parentElement.dataset.id);
-  // debugger
-  const input = e.querySelector("input"); // check cell element has an <input>
-  const attribute = e.classList.value; // class names must === Substance property
+
+  const input = e.querySelector("input"); // check if cell element has an <input>
+
+  const attribute = e.classList.value; // class names must == Substance property
   substance[attribute] = input ? input.value : e.innerHTML; // <input> vs. cell
 
   save("substances", substanceS);
@@ -260,27 +252,19 @@ function getKeyCombo(e) {
   let key = String.fromCharCode(e.keyCode);
 
   // Special characters
-  if (String.fromCharCode(e.keyCode) != e.key.toUpperCase()) {
-    if (e.key == "å" || e.key == "ä" || e.key == "ö" || e.key == "Å" || e.key == "Ä" || e.key == "Ö") {
-      key = e.key.toUpperCase()
-    } else {
-      key = `${key} / ${e.key}`;
-    }
-  } else {
-    // Å Ä Ö Space
-    switch (e.keyCode) {
-      // case 219:
-      //   key = "Å";
-      //   break;
-      // case 222:
-      //   key = "Ä";
-      //   break;
-      // case 186:
-      //   key = "Ö";
-      //   break;
-      case 32:
-        key = "SPACE"
-    }
+  switch (e.keyCode) {
+    case 221:
+      key = "Å";
+      break;
+    case 222:
+      key = "Ä";
+      break;
+    case 192:
+      key = "Ö";
+      break;
+    case 32:
+      key = "SPACE";
+      break;
   }
 
   return {
@@ -377,11 +361,9 @@ function exportExcel() {
   filename += ".csv";
 
   const divider = ";";
-  // let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
-  let csv = `\ufeffMagn x${divider}Count part${divider}Species${divider}C/kol/100µ${divider}No count${divider}Size class${divider}Cell vol µm3${divider}Group${divider}alt1${divider}alt2\r\n`;
+  let csv = `\ufeffMagn x${divider}Count part${divider}Species${divider}C/kol/100µ${divider}No count${divider}Size class${divider}Cell vol µm3${divider}Group${divider}${columnData.alt1}${divider}${columnData.alt2}\r\n`;
 
   csv += substanceS.map(substance => {
-    // return `${substance.species + divider + substance.magnification + divider + substance.quantity}\r\n`;
     return `${substance.magnification + divider + substance.countPart + divider + substance.species + divider + substance.cKoll100 + divider + substance.quantity + divider + substance.sizeClass + divider + substance.cellvolume + divider + substance.group + divider + substance.alt1 + divider + substance.alt2}\r\n`;
   }).join("");
 

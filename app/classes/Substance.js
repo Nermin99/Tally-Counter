@@ -14,5 +14,3 @@ class Substance {
     this.alt2 = "";
   }
 }
-
-// export default Substance;
