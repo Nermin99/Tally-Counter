@@ -1,19 +1,20 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+}
+
 #root {
   display: inline-block;
-  width: 80%;
-  margin-right: 0;
-  margin-bottom: 10rem;
+  width: 90%;
+  margin-bottom: 5rem;
 }
 
-aside {
-  display: inline-block;
-}
-
-aside button {
-  display: block;
-}
-
-.hotkey, .pointer {
+.tallyKey, .pointer {
   cursor: pointer;
 }
 
@@ -23,47 +24,144 @@ aside button {
   left: 100px;
 }
 
-/* Custom bootstrap */
-.table th, .table td {
+i {
+  font-weight: 900;
+  font-family: Font Awesome\ 5 Free;
+  font-style: normal;
+  line-height: 1
+}
+
+.plus-circle {
+  color: green;
+  font-size: 2rem;
+  vertical-align: inherit;
+  margin-right: 0.5rem;
+  margin-left: 0.2rem;
+}
+
+.plus-circle:before {
+  content: "\f055";
+}
+
+.minus-circle {
+  color: red;
+  font-size: 1.5rem;
+}
+
+.minus-circle:before {
+  content: "\f056";
+}
+
+aside {
+  position: fixed;
+  display: inline-flex;
+  flex-direction: column;
+  width: 9%;
+  top: 1%;
+  right: 0.5%;
+}
+
+aside button {
+  margin-bottom: 2rem;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  border: none;
+}
+
+aside button:hover {
+  cursor: pointer;
+}
+
+#saveFile {
+  background-color: lightgreen;
+}
+
+#resetQuantity {
+  background-color: lightgoldenrodyellow;
+}
+
+#resetTable {
+  background-color: lightcoral;
+}
+
+.addNewRowInput {
+  width: 3rem;
+  margin-left: 0.5rem;
   vertical-align: middle;
 }
 
-.table tr {
-  transition: all 0.07s ease;
+/** Table **/
+
+table {
+  border-collapse: collapse;
+  line-height: 24px;
+  text-align: left;
+  width: 100%;
+  table-layout: fixed;
 }
 
-.table td.index { width: 15%; }
-.table td.substance { width: 30%; }
-.table td.hotkey { width: 30%; }
-.table td.zoom { width: 10%; }
-.table td.counter { width: 15%; }
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #e1efda;
+th, td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 0.5rem;
 }
 
-.table-striped tbody tr:nth-of-type(even) {
+td {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+td.tallyKey {
+  text-align: center;
+}
+
+td.id, td.sizeClass, td.cellvolume, td.group {
+  text-align: right;
+}
+
+td.input {
+  padding: 0.5rem;
+}
+
+input {
+  display: table-cell;
+  width: 100%;
+  padding: 0.2rem 0.3rem;
+}
+
+input:not(.addNewRowInput) {
+  border: 1px solid rgb(238, 238, 238);
+}
+
+.quantity.input input {
+  font-weight: bold;
+}
+
+thead th {
+  color: #fff;
+  background-color: #217346;
+  border-color: #217346;
+}
+
+tbody tr {
+  transition: all 0.1s ease;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: #e2efda;
+}
+
+tbody tr:nth-of-type(even) {
   background-color: #fff;
 }
 
-.table .thead-dark th {
-  background-color: #6fad47;
-  border-color: #6fad47;
-}
-
-.table-hover tbody tr:hover {
+tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.075);
 }
 
-/* Custom fontawesome */
-.fa-plus-circle {
-  color: green;
-  font-size: 2rem;
-  margin-right: 0.5rem;
-  vertical-align: inherit;
+tfoot th:hover {
+  background-color: #f5ffef;
 }
 
-.fa-minus-circle {
-  color: red;
-  font-size: 1.5rem;
+tfoot span {
+  vertical-align: middle;
 }

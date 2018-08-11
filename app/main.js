@@ -1,5 +1,3 @@
-// import Substance from './classes/Substance';
-
 /**
  * Global
  * NODEs
@@ -9,31 +7,45 @@ const root = document.querySelector("#root");
 /**
  * Objects
  */
+var tallyCounter = {};
+
 var substanceS = [];
+
+var columnData = {};
 
 function init() {
   let subs = [
-    new Substance("Vitsippa", 0),
-    new Substance("Blåsippa", 1),
-    new Substance("Ros", 2),
-    new Substance("Vass", 3),
-    new Substance("Säv", 4),
-    new Substance("Kaveldun", 5),
-    new Substance("Gul", 6),
-    new Substance("Natearter", 7),
+    new Substance(0, "Attheya decora"),
+    new Substance(1, "Skeletonema marinoi"),
+    new Substance(2, "Protoperidinium depressum"),
+    new Substance(3, "Chaetoceros curvisetus"),
+    new Substance(4, "Dolichospermum"),
+    new Substance(5, ""),
+    new Substance(6, ""),
+    new Substance(7, ""),
   ];
+
   substanceS = subs;
 
+  columnData = {
+    alt1: "",
+    alt2: ""
+  }
+
+  // loads saved substances & column data
   if (typeof(Storage) !== "undefined") {
-    // loads the saved substances
     if (localStorage.getItem('substances') !== null) {
       substanceS = load("substances");
     }
 
-    // saves new toggle variable for table size
-    if (localStorage.getItem('tSize') === null) {
-      save('tSize', "");
+    if (localStorage.getItem('columnData') !== null) {
+      columnData = load("columnData");
     }
+  }
+
+  tallyCounter = {
+    substances: substanceS,
+    columnData: columnData
   }
 
   render();
@@ -43,21 +55,28 @@ function init() {
 init();
 
 function increment(substance) {
-  substance.counter++;
+  substance.quantity++;
   animate(substance.id);
 }
 
 function decrement(substance) {
-  if (substance.counter == 0) return;
-    substance.counter--;
+  if (substance.quantity <= 0) return;
+    substance.quantity--;
   render();
 }
 
 function addNew() {
   const n = document.querySelector('#number').value;
 
+  // empty table
+  if (substanceS.length == 0) {
+    substanceS.push(new Substance(0));
+    render();
+    return;
+  }
+
   for (let i = 0; i < n; i++) {
-    const substance = new Substance("", substanceS[substanceS.length-1].id + 1);
+    const substance = new Substance(substanceS[substanceS.length-1].id + 1);
     substanceS.push(substance);
   }
   render();
@@ -93,59 +112,106 @@ function render() {
     return; // current
   }
 
-  /* substanceS.sort((a, b) => {
-    if (a.counter == b.counter) return 0;
-    if (a.counter < b.counter) return -1;
-    if (a.counter > b.counter) return 1;
-
-  }).reverse(); */
-
   const html = `
-        <table id="table" class="table table-striped table-bordered table-hover ${load('tSize')}">
+        <table id="table" class="table table-striped table-bordered table-hover">
+          <col width="3%"/>
+          <col width="7%"/>
+          <col width="8%"/>
+          <col width="9%"/>
+          <col width="19%"/>
+          <col width="8%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="8%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="3%"/>
+
           <thead class="thead-dark">
-            <th scope="col">#</th>
-            <th scope="col">Ämne</th>
-            <th scope="col">Hotkey</th>
-            <th scope="col">Zoom</th>
-            <th scope="col" colspan="2">Antal</th>
+            <th scope="col">No</th>
+            <th scope="col">Magn x</th>
+            <th scope="col">Count part</th>
+            <th scope="col">Tally key</th>
+            <th scope="col">Species</th>
+            <th scope="col">C/kol/100µ</th>
+            <th scope="col">No count</th>
+            <th scope="col">Size class</th>
+            <th scope="col">Cell vol µm3</th>
+            <th scope="col">Group</th>
+            <th scope="col" class="alt1" contenteditable="true" oninput="saveColumnData(this)">${columnData.alt1}</th>
+            <th scope="col" class="alt2" contenteditable="true" oninput="saveColumnData(this)" colspan="2">${columnData.alt2}</th>
           </thead>
           <tbody>
-          ${ substanceS.map((substance, index) => {
-            const hotkey = substance.keyCombo;
+          ${ substanceS.map((substance, id) => {
+            const hotkey = substance.tallyKey;
             return `
               <tr data-id="${substance.id}">
-                <td class="index">${index}</td>
-                <td class="name" contenteditable="true" oninput="saveEdit(this)">${substance.name}</td>
-                <td class="hotkey" onclick="assignHotkey(${substance.id})">${hotkey ? hotkey.shift ? "shift +" : "" : ""} ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""} ${hotkey ? hotkey.alt ? "alt +" : "" : ""} ${hotkey ? hotkey.key : 'no key'}</td>
-                <td class="zoom" contenteditable="true" oninput="saveEdit(this)">${substance.zoom}</td>
-                <th class="counter" contenteditable="true" oninput="saveEdit(this)">${substance.counter}</th>
-                <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
+                <td class="id">${id}</td>
+                <td class="magnification input" oninput="saveEdit(this)">
+                  <input list="magnification-list" contenteditable="true" type="number" value="${substance.magnification}">
+
+                  <datalist id="magnification-list">
+                    <option value="100">
+                    <option value="200">
+                    <option value="400">
+                  </datalist>
+                </td>
+                <td class="countPart" contenteditable="true" oninput="saveEdit(this)">${substance.countPart}</td>
+                <td class="tallyKey" onclick="assignHotkey(${substance.id})">
+                  ${hotkey ? hotkey.shift ? "shift +" : "" : ""}
+                  ${hotkey ? hotkey.ctrl ? "ctrl +" : "" : ""}
+                  ${hotkey ? hotkey.alt ? "alt +" : "" : ""}
+                  ${hotkey ? hotkey.key : 'no key'}
+                </td>
+                <td class="species" contenteditable="true" oninput="saveEdit(this)">${substance.species}</td>
+                <td class="cKoll100" contenteditable="true" oninput="saveEdit(this)">${substance.cKoll100}</td>
+                <td class="quantity input" contenteditable="true" oninput="saveEdit(this)">
+                  <input contenteditable="true" type="number" value="${substance.quantity}">
+                </td>
+                <td class="sizeClass" contenteditable="true" oninput="saveEdit(this)">${substance.sizeClass}</td>
+                <td class="cellvolume" contenteditable="true" oninput="saveEdit(this)">${substance.cellvolume}</td>
+                <td class="group" contenteditable="true" oninput="saveEdit(this)">${substance.group}</td>
+                <td class="alt1" contenteditable="true" oninput="saveEdit(this)">${substance.alt1}</td>
+                <td class="alt2" contenteditable="true" oninput="saveEdit(this)">${substance.alt2}</td>
+                <td> <i class="fas minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
             ).join("") }
-
-              <tr>
-                <th class="pointer" colspan="3" onclick="addNew()">
-                  <i class="fas fa-plus-circle"></i>
-                  <span>Lägg Till Rad</span>
-                </th>
-                <td colspan="3">
-                  <input id="number" type="number" value="1">
-                </td>
-              </tr>
-          </tbody>
+            </tbody>
+            <tfoot>
+              <th class="pointer" colspan="13" onClick="addNew()">
+                <i class="fas plus-circle"></i>
+                <span>Add Row(s) </span>
+                <input id="number" type="number" value="1" class="addNewRowInput" onClick="event.stopPropagation()">
+              </th>
+            </tfoot>
         </table>`
 
   root.innerHTML = html;
   save("substances", substanceS);
+  save("columnData", columnData);
 }
 
 function saveEdit(e) {
   const substance = substanceS.find(sub => sub.id == e.parentElement.dataset.id);
 
-  const attribute = e.classList.value;
-  substance[attribute] = e.innerHTML;
+  const input = e.querySelector("input"); // check if cell element has an <input>
+
+  const attribute = e.classList[0]; // class names must == Substance property
+  substance[attribute] = input ? input.value : e.innerHTML; // <input> vs. cell
 
   save("substances", substanceS);
+}
+
+function saveColumnData(e) {
+  const alternative = e.classList.value;
+  if (alternative == "alt1") {
+    columnData.alt1 = e.innerHTML;
+  } else if (alternative == "alt2"){
+    columnData.alt2 = e.innerHTML;
+  }
+
+  save("columnData", columnData);
 }
 
 /**
@@ -153,7 +219,7 @@ function saveEdit(e) {
  */
 function assignHotkey(id) {
   let currentElem = document.querySelector(`[data-id='${id}']`);
-  currentElem.querySelector(".hotkey").innerText = "select key please";
+  currentElem.querySelector(".tallyKey").innerText = "select key";
 
   window.removeEventListener('keyup', settingHotkey);
   window.addEventListener('keyup', (e) => {settingHotkey(id, e)}, { once:true });
@@ -163,41 +229,17 @@ function assignHotkey(id) {
 function settingHotkey(id, e) {
   e.preventDefault();
 
-  let key = String.fromCharCode(e.keyCode);
-
-  // Special characters
-  if (String.fromCharCode(e.keyCode) != e.key.toUpperCase()) {
-    key = `${key} / ${e.key}`;
-  } else {
-    // Å Ä Ö
-    switch (e.keyCode) {
-      case 219:
-        key = "Å";
-        break;
-      case 222:
-        key = "Ä";
-        break;
-      case 186:
-        key = "Ö"
-    }
-  }
-
-  const keyCombo = {
-    key: key,
-    alt: e.altKey,
-    ctrl: e.ctrlKey,
-    shift: e.shiftKey
-  }
+  const keyCombo = getKeyCombo(e);
 
   const otherSubstance = substanceS.find(substance => {
-    return JSON.stringify(substance.keyCombo) === JSON.stringify(keyCombo);
+    return JSON.stringify(substance.tallyKey) === JSON.stringify(keyCombo);
   })
 
   // If another substance already has the keyCombo replace its
-  if (otherSubstance) otherSubstance.keyCombo = null;
+  if (otherSubstance) otherSubstance.tallyKey = null;
 
   const substance = substanceS.find(substance => substance.id === id);
-  substance.keyCombo = keyCombo;
+  substance.tallyKey = keyCombo;
 
   render();
   window.addEventListener('keydown', runHotkey);
@@ -207,34 +249,12 @@ function runHotkey(e) {
   // Don't run on input
   if (e.target.contentEditable == "true") return;
 
-  let key = String.fromCharCode(e.keyCode);
+  e.preventDefault();
 
-  // Special characters
-  if (String.fromCharCode(e.keyCode) != e.key.toUpperCase()) {
-    key = `${key} / ${e.key}`;
-  } else {
-    // Å Ä Ö
-    switch (e.keyCode) {
-      case 219:
-        key = "Å";
-        break;
-      case 222:
-        key = "Ä";
-        break;
-      case 186:
-        key = "Ö"
-    }
-  }
-
-  const keyCombo = {
-    key: key,
-    alt: e.altKey,
-    ctrl: e.ctrlKey,
-    shift: e.shiftKey,
-  }
+  const keyCombo = getKeyCombo(e);
 
   const substance = substanceS.find(substance => {
-    return JSON.stringify(substance.keyCombo) === JSON.stringify(keyCombo);
+    return JSON.stringify(substance.tallyKey) === JSON.stringify(keyCombo);
   });
 
   // If hotkey exists
@@ -242,28 +262,44 @@ function runHotkey(e) {
   increment(substance);
 }
 
+function getKeyCombo(e) {
+  let key = String.fromCharCode(e.keyCode);
+
+  // Special characters
+  switch (e.keyCode) {
+    case 221:
+      key = "Å";
+      break;
+    case 222:
+      key = "Ä";
+      break;
+    case 192:
+      key = "Ö";
+      break;
+    case 32:
+      key = "SPACE";
+      break;
+  }
+
+  return {
+    key: key,
+    alt: e.altKey,
+    ctrl: e.ctrlKey,
+    shift: e.shiftKey
+  }
+}
+
 /**
- * save & load
+ * save & load - file
  */
-function save(key, value) {
-  try {
-    const data = JSON.stringify(value);
-    localStorage.setItem(key, data);
-  }  catch(error) {
-    console.error("CANT SAVE", error);
-  }
-}
-
-function load(key) {
-  try {
-    return JSON.parse(localStorage.getItem(key));
-  } catch (error) {
-    console.error("CANT LOAD", error);
-  }
-}
-
 function saveToFile() {
-  const data = JSON.stringify(substanceS);
+  // update tallyCounter
+  tallyCounter = {
+    substances: substanceS,
+    columnData: columnData
+  }
+
+  const data = JSON.stringify(tallyCounter);
   let a = document.createElement("a");
   const file = new Blob([data], {type: "application/json"});
 
@@ -293,7 +329,9 @@ function initLoadFromFile() {
 
   reader.onload = function () {
     try {
-      substanceS = JSON.parse(decodeURIComponent(escape(reader.result))); // decode UTF8 and parse result
+      tallyCounter = JSON.parse(decodeURIComponent(escape(reader.result))); // decode UTF8 and parse result
+      substanceS = tallyCounter.substances;
+      columnData = tallyCounter.columnData;
       render();
       location.reload();
     } catch (error) {
@@ -311,16 +349,20 @@ function loadFromFile() {
 /**
  * Aside buttons
  */
-
-function toggleTableSize() {
-  load('tSize') === "" ? save('tSize', "table-sm") : save('tSize', "");
-  render();
+function save(key, value) {
+  try {
+    const data = JSON.stringify(value);
+    localStorage.setItem(key, data);
+  }  catch(error) {
+    console.error("CANT SAVE", error);
+  }
 }
 
-function resetTable() {
-  if (confirm('Är du säker på att du vill återställa tabellen?')) {
-    localStorage.clear();
-    location.reload();
+function load(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key));
+  } catch (error) {
+    console.error("CANT LOAD", error);
   }
 }
 
@@ -332,11 +374,11 @@ function exportExcel() {
   }
   filename += ".csv";
 
-  const divider = ";";
-  let csv = `\ufeffNamn${divider}Zoom${divider}Antal\r\n`;
+  const delimiter = ",";
+  let csv = `\ufeffMagn x${delimiter}Count part${delimiter}Species${delimiter}C/kol/100µ${delimiter}No count${delimiter}Size class${delimiter}Cell vol µm3${delimiter}Group${delimiter}${columnData.alt1}${delimiter}${columnData.alt2}\r\n`;
 
   csv += substanceS.map(substance => {
-    return `${substance.name + divider + substance.zoom + divider + substance.counter}\r\n`;
+    return `${substance.magnification + delimiter + substance.countPart + delimiter + substance.species + delimiter + substance.cKoll100 + delimiter + substance.quantity + delimiter + substance.sizeClass + delimiter + substance.cellvolume + delimiter + substance.group + delimiter + substance.alt1 + delimiter + substance.alt2}\r\n`;
   }).join("");
 
   const blob = new Blob([csv], { type: 'text;charset=UTF-8;' });
@@ -354,5 +396,21 @@ function exportExcel() {
           link.click();
           document.body.removeChild(link);
       }
+  }
+}
+
+function resetTable() {
+  if (confirm('Är du säker på att du vill återställa tabellen?')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+function resetQuantityColumn() {
+  if (confirm('Är du säker på att du vill återställa antal-kolumnen?')) {
+    substanceS.forEach(substance => {
+      substance.quantity = 0;
+    });
+    render();
   }
 }

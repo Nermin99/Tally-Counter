@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Page Title</title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
   <script src="classes/Substance.js"></script>
 </head>
@@ -15,17 +14,17 @@
   <div id="root"></div>
 
   <aside>
-    <button onclick="toggleTableSize()">Växla tabellstorlek</button>
-    <br>
-    <button onclick="resetTable()">Återställ tabell</button>
-    <br>
-    <button onclick="saveToFile()">Spara till fil</button>
-    <br>
-    <button onclick="loadFromFile()">Ladda från fil</button>
+    <button id="saveFile" onclick="saveToFile()">Spara till fil</button>
+
+    <button onclick="loadFromFile()">Öppna fil</button>
     <input type="file" id="fileInput" style="display:none">
-    <br>
+
     <button id="btnExport" onclick="exportExcel()">Exportera</button>
     <iframe id="txtArea1" style="display:none"></iframe>
+
+    <button id="resetQuantity" onclick="resetQuantityColumn()">Återställ No count</button>
+
+    <button id="resetTable" onclick="resetTable()">Återställ tabell</button>
   </aside>
 
   <script src="main.js"></script>
