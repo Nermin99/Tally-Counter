@@ -15,22 +15,16 @@ var columnData = {};
 
 function init() {
   let subs = [
-    new Substance(0, "Vitsippa"),
-    new Substance(1, "Blåsippa"),
+    new Substance(0, "Attheya decora"),
+    new Substance(1, "Skeletonema marinoi"),
     new Substance(2, "Protoperidinium depressum"),
-    new Substance(3, "Vass"),
-    new Substance(4, "Säv"),
-    new Substance(5, "Kaveldun"),
-    new Substance(6, "Gul"),
-    new Substance(7, "Natearter"),
+    new Substance(3, "Chaetoceros curvisetus"),
+    new Substance(4, "Dolichospermum"),
+    new Substance(5, ""),
+    new Substance(6, ""),
+    new Substance(7, ""),
   ];
-  subs[2].magnification = 400;
-  subs[2].countPart = "4 diam A";
-  subs[2].cKoll100 = "kol 10c";
-  subs[2].quantity = 100;
-  subs[2].sizeClass = 2;
-  subs[2].cellvolume = 23000;
-  subs[2].group = 12;
+
   substanceS = subs;
 
   columnData = {
@@ -120,6 +114,20 @@ function render() {
 
   const html = `
         <table id="table" class="table table-striped table-bordered table-hover">
+          <col width="3%"/>
+          <col width="7%"/>
+          <col width="8%"/>
+          <col width="9%"/>
+          <col width="19%"/>
+          <col width="8%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="8%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="3%"/>
+
           <thead class="thead-dark">
             <th scope="col">No</th>
             <th scope="col">Magn x</th>
@@ -171,15 +179,11 @@ function render() {
             ).join("") }
             </tbody>
             <tfoot>
-              <tr>
-                <td class="input" colspan="1">
-                  <input id="number" type="number" value="1">
-                </td>
-                <th class="pointer" colspan="12" onclick="addNew()">
-                  <i class="fas plus-circle"></i>
-                  <span>Lägg Till Rad</span>
-                </th>
-              </tr>
+              <th class="pointer" colspan="13" onClick="addNew()">
+                <i class="fas plus-circle"></i>
+                <span>Add Row(s) </span>
+                <input id="number" type="number" value="1" class="addNewRowInput" onClick="event.stopPropagation()">
+              </th>
             </tfoot>
         </table>`
 
@@ -370,11 +374,11 @@ function exportExcel() {
   }
   filename += ".csv";
 
-  const divider = ";";
-  let csv = `\ufeffMagn x${divider}Count part${divider}Species${divider}C/kol/100µ${divider}No count${divider}Size class${divider}Cell vol µm3${divider}Group${divider}${columnData.alt1}${divider}${columnData.alt2}\r\n`;
+  const delimiter = ",";
+  let csv = `\ufeffMagn x${delimiter}Count part${delimiter}Species${delimiter}C/kol/100µ${delimiter}No count${delimiter}Size class${delimiter}Cell vol µm3${delimiter}Group${delimiter}${columnData.alt1}${delimiter}${columnData.alt2}\r\n`;
 
   csv += substanceS.map(substance => {
-    return `${substance.magnification + divider + substance.countPart + divider + substance.species + divider + substance.cKoll100 + divider + substance.quantity + divider + substance.sizeClass + divider + substance.cellvolume + divider + substance.group + divider + substance.alt1 + divider + substance.alt2}\r\n`;
+    return `${substance.magnification + delimiter + substance.countPart + delimiter + substance.species + delimiter + substance.cKoll100 + delimiter + substance.quantity + delimiter + substance.sizeClass + delimiter + substance.cellvolume + delimiter + substance.group + delimiter + substance.alt1 + delimiter + substance.alt2}\r\n`;
   }).join("");
 
   const blob = new Blob([csv], { type: 'text;charset=UTF-8;' });

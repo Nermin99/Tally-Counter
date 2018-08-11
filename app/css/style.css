@@ -36,6 +36,7 @@ i {
   font-size: 2rem;
   vertical-align: inherit;
   margin-right: 0.5rem;
+  margin-left: 0.2rem;
 }
 
 .plus-circle:before {
@@ -61,10 +62,10 @@ aside {
 }
 
 aside button {
-  margin-bottom: 3rem;
-  padding: 0.2rem 0;
-  font-size: 16px;
-  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  border: none;
 }
 
 aside button:hover {
@@ -83,17 +84,30 @@ aside button:hover {
   background-color: lightcoral;
 }
 
+.addNewRowInput {
+  width: 3rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
 /** Table **/
 
 table {
   border-collapse: collapse;
   line-height: 24px;
   text-align: left;
+  width: 100%;
+  table-layout: fixed;
 }
 
 th, td {
   border: 1px solid #dee2e6;
   padding: 0.75rem 0.5rem;
+}
+
+td {
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 td.tallyKey {
@@ -105,12 +119,17 @@ td.id, td.sizeClass, td.cellvolume, td.group {
 }
 
 td.input {
-  padding: 0;
+  padding: 0.5rem;
 }
 
 input {
   display: table-cell;
   width: 100%;
+  padding: 0.2rem 0.3rem;
+}
+
+input:not(.addNewRowInput) {
+  border: 1px solid rgb(238, 238, 238);
 }
 
 .quantity.input input {
@@ -146,16 +165,3 @@ tfoot th:hover {
 tfoot span {
   vertical-align: middle;
 }
-
-table .id { width: 3%; }
-table .magnification { width: 6%; }
-table .countPart { width: 9%; }
-table .tallyKey { width: 9%; }
-table .species { width: 22%; }
-table .cKoll100 { width: 8%; }
-table .quantity { width: 7%; }
-table .sizeClass { width: 7%; }
-table .cellvolume { width: 9%; }
-table .group { width: 4%; }
-table .alt1 { width: 8%; }
-table .alt2 { width: 8%; }
