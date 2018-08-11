@@ -1,18 +1,13 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
 #root {
   display: inline-block;
-  width: 97%;
-  margin-right: 0;
+  width: 80%;
   margin-bottom: 1rem;
-}
-
-aside {
-  display: inline-block;
-  width: 100%;
-}
-
-aside button {
-  display: inline-block;
-  margin-right: 1rem;
+  font-family: Combic Sans MS;
 }
 
 .tallyKey, .pointer {
@@ -25,54 +20,120 @@ aside button {
   left: 100px;
 }
 
-/* Custom bootstrap */
-.table th, .table td {
-  vertical-align: middle;
+i {
+  font-weight: 900;
+  font-family: Font Awesome\ 5 Free;
+  font-style: normal;
+  line-height: 1
 }
 
-.table tr {
-  transition: all 0.07s ease;
-}
-
-.table .id { width: 5%; }
-.table .magnification { width: 6%; }
-.table .countPart { width: 10%; }
-.table .tallyKey { width: 8%; }
-.table .species { width: 15%; }
-.table .cKoll100 { width: 10%; }
-.table .quantity { width: 6%; }
-.table .sizeClass { width: 10%; }
-.table .cellvolume { width: 8%; }
-.table .group { width: 8%; }
-.table .alt1 { width: 8%; }
-.table .alt2 { width: 8%; }
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #e1efda;
-}
-
-.table-striped tbody tr:nth-of-type(even) {
-  background-color: #fff;
-}
-
-.table .thead-dark th {
-  background-color: #6fad47;
-  border-color: #6fad47;
-}
-
-.table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.075);
-}
-
-/* Custom fontawesome */
-.fa-plus-circle {
+.plus-circle {
   color: green;
   font-size: 2rem;
-  margin-right: 0.5rem;
   vertical-align: inherit;
+  margin-right: 0.5rem;
 }
 
-.fa-minus-circle {
+.plus-circle:before {
+  content: "\f055";
+}
+
+.minus-circle {
   color: red;
   font-size: 1.5rem;
 }
+
+.minus-circle:before {
+  content: "\f056";
+}
+
+aside {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+aside button {
+  font-size: 18px;
+}
+
+/** Table **/
+
+table {
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  line-height: 24px;
+  text-align: left;
+}
+
+th, td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 0.5rem;
+}
+
+td.tallyKey {
+  text-align: center;
+}
+
+td.id, td.sizeClass, td.cellvolume, td.group {
+  text-align: right;
+}
+
+td.input {
+  padding: 0;
+}
+
+input {
+  display: table-cell;
+  /* border: 1px solid black; */
+  /* background-color: transparent; */
+  height: 25px;
+  width: 100%;
+}
+
+input::-webkit-outer-spin-button {
+  color: red;
+  background-color:red;
+}
+
+thead th {
+  color: #fff;
+  background-color: #217346;
+  border-color: #217346;
+}
+
+tbody tr {
+  transition: all 0.1s ease;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: #e2efda;
+}
+
+tbody tr:nth-of-type(even) {
+  background-color: #fff;
+}
+
+tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+tfoot th:hover {
+  background-color: #f5ffef;
+}
+
+tfoot span {
+  vertical-align: middle;
+}
+
+table .id { width: 3%; }
+table .magnification { width: 6%; }
+table .countPart { width: 9%; }
+table .tallyKey { width: 9%; }
+table .species { width: 20%; }
+table .cKoll100 { width: 8%; }
+table .quantity { width: 7%; }
+table .sizeClass { width: 7%; }
+table .cellvolume { width: 9%; }
+table .group { width: 6%; }
+table .alt1 { width: 8%; }
+table .alt2 { width: 8%; }
