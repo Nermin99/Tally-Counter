@@ -3,11 +3,15 @@
   box-sizing: border-box;
 }
 
+body {
+  width: 100%;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+}
+
 #root {
   display: inline-block;
-  width: 80%;
-  margin-bottom: 1rem;
-  font-family: Combic Sans MS;
+  width: 90%;
+  margin-bottom: 5rem;
 }
 
 .tallyKey, .pointer {
@@ -48,19 +52,41 @@ i {
 }
 
 aside {
+  position: fixed;
   display: inline-flex;
   flex-direction: column;
+  width: 9%;
+  top: 1%;
+  right: 0.5%;
 }
 
 aside button {
-  font-size: 18px;
+  margin-bottom: 3rem;
+  padding: 0.2rem 0;
+  font-size: 16px;
+  border-radius: 0.5rem;
+}
+
+aside button:hover {
+  cursor: pointer;
+}
+
+#saveFile {
+  background-color: lightgreen;
+}
+
+#resetQuantity {
+  background-color: lightgoldenrodyellow;
+}
+
+#resetTable {
+  background-color: lightcoral;
 }
 
 /** Table **/
 
 table {
   border-collapse: collapse;
-  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
   line-height: 24px;
   text-align: left;
 }
@@ -84,15 +110,11 @@ td.input {
 
 input {
   display: table-cell;
-  /* border: 1px solid black; */
-  /* background-color: transparent; */
-  height: 25px;
   width: 100%;
 }
 
-input::-webkit-outer-spin-button {
-  color: red;
-  background-color:red;
+.quantity.input input {
+  font-weight: bold;
 }
 
 thead th {
@@ -129,11 +151,11 @@ table .id { width: 3%; }
 table .magnification { width: 6%; }
 table .countPart { width: 9%; }
 table .tallyKey { width: 9%; }
-table .species { width: 20%; }
+table .species { width: 22%; }
 table .cKoll100 { width: 8%; }
 table .quantity { width: 7%; }
 table .sizeClass { width: 7%; }
 table .cellvolume { width: 9%; }
-table .group { width: 6%; }
+table .group { width: 4%; }
 table .alt1 { width: 8%; }
 table .alt2 { width: 8%; }

@@ -245,6 +245,8 @@ function runHotkey(e) {
   // Don't run on input
   if (e.target.contentEditable == "true") return;
 
+  e.preventDefault();
+
   const keyCombo = getKeyCombo(e);
 
   const substance = substanceS.find(substance => {
