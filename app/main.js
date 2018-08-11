@@ -17,13 +17,20 @@ function init() {
   let subs = [
     new Substance(0, "Vitsippa"),
     new Substance(1, "Blåsippa"),
-    new Substance(2, "Ros"),
+    new Substance(2, "Protoperidinium depressum"),
     new Substance(3, "Vass"),
     new Substance(4, "Säv"),
     new Substance(5, "Kaveldun"),
     new Substance(6, "Gul"),
     new Substance(7, "Natearter"),
   ];
+  subs[2].magnification = 400;
+  subs[2].countPart = "4 diam A";
+  subs[2].cKoll100 = "kol 10c";
+  subs[2].quantity = 100;
+  subs[2].sizeClass = 2;
+  subs[2].cellvolume = 23000;
+  subs[2].group = 12;
   substanceS = subs;
 
   columnData = {
@@ -133,7 +140,7 @@ function render() {
             return `
               <tr data-id="${substance.id}">
                 <td class="id">${id}</td>
-                <td class="magnification" oninput="saveEdit(this)">
+                <td class="magnification input" oninput="saveEdit(this)">
                   <input list="magnification-list" contenteditable="true" type="number" value="${substance.magnification}">
 
                   <datalist id="magnification-list">
@@ -151,7 +158,7 @@ function render() {
                 </td>
                 <td class="species" contenteditable="true" oninput="saveEdit(this)">${substance.species}</td>
                 <td class="cKoll100" contenteditable="true" oninput="saveEdit(this)">${substance.cKoll100}</td>
-                <td class="quantity" contenteditable="true" oninput="saveEdit(this)">
+                <td class="quantity input" contenteditable="true" oninput="saveEdit(this)">
                   <input contenteditable="true" type="number" value="${substance.quantity}">
                 </td>
                 <td class="sizeClass" contenteditable="true" oninput="saveEdit(this)">${substance.sizeClass}</td>
@@ -159,20 +166,21 @@ function render() {
                 <td class="group" contenteditable="true" oninput="saveEdit(this)">${substance.group}</td>
                 <td class="alt1" contenteditable="true" oninput="saveEdit(this)">${substance.alt1}</td>
                 <td class="alt2" contenteditable="true" oninput="saveEdit(this)">${substance.alt2}</td>
-                <td> <i class="fas fa-minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
+                <td> <i class="fas minus-circle pointer" onclick="removeOld(${substance.id})"></i> </td>
               </tr>` }
             ).join("") }
-
+            </tbody>
+            <tfoot>
               <tr>
-                <th class="pointer" colspan="8" onclick="addNew()">
-                  <i class="fas fa-plus-circle"></i>
-                  <span>Lägg Till Rad</span>
-                </th>
-                <td colspan="5">
+                <td class="input" colspan="1">
                   <input id="number" type="number" value="1">
                 </td>
+                <th class="pointer" colspan="12" onclick="addNew()">
+                  <i class="fas plus-circle"></i>
+                  <span>Lägg Till Rad</span>
+                </th>
               </tr>
-          </tbody>
+            </tfoot>
         </table>`
 
   root.innerHTML = html;
@@ -185,7 +193,7 @@ function saveEdit(e) {
 
   const input = e.querySelector("input"); // check if cell element has an <input>
 
-  const attribute = e.classList.value; // class names must == Substance property
+  const attribute = e.classList[0]; // class names must == Substance property
   substance[attribute] = input ? input.value : e.innerHTML; // <input> vs. cell
 
   save("substances", substanceS);
