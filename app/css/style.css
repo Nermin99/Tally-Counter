@@ -24,31 +24,33 @@ body {
   left: 100px;
 }
 
-i {
+svg {
   font-weight: 900;
   font-family: Font Awesome\ 5 Free;
   font-style: normal;
-  line-height: 1
+  line-height: 1;
 }
 
-.plus-circle {
+.fa-plus-circle {
   color: green;
   font-size: 2rem;
+  width: 2rem;
   vertical-align: inherit;
   margin-right: 0.5rem;
   margin-left: 0.2rem;
 }
 
-.plus-circle:before {
+.fa-plus-circle:before {
   content: "\f055";
 }
 
-.minus-circle {
+.fa-minus-circle {
   color: red;
   font-size: 1.5rem;
+  width: 1.41rem;
 }
 
-.minus-circle:before {
+.fa-minus-circle:before {
   content: "\f056";
 }
 
