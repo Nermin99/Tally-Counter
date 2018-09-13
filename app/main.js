@@ -369,7 +369,7 @@ function exportExcel() {
   }
   filename += ".csv";
 
-  const delimiter = ",";
+  const delimiter = ";";
   let csv = `\ufeffMagn x${delimiter}Count part${delimiter}Species${delimiter}C/kol/100µ${delimiter}No count${delimiter}Size class${delimiter}Cell vol µm3${delimiter}Group${delimiter}${columnData.alt1}${delimiter}${columnData.alt2}\r\n`;
 
   csv += substanceS.map(substance => {
