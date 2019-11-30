@@ -11,7 +11,9 @@
     "babel-core": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "http-server": "^0.11.1",
-    "mkdirp": "^0.5.1"
+    "mkdirp": "^0.5.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "scripts": {
     "babel": "babel --presets es2015 app/main.js -o build/main.js && babel --presets es2015 app/classes/Substance.js -o build/classes/Substance.js",
