@@ -16,7 +16,7 @@
     "webpack-cli": "^3.3.10"
   },
   "scripts": {
-    "babel": "babel --presets es2015 app/main.js -o build/main.js && babel --presets es2015 app/classes/Substance.js -o build/classes/Substance.js",
+    "babel": "babel --presets es2015 app/index.js -o build/index.js && babel --presets es2015 app/classes/Substance.js -o build/classes/Substance.js",
     "prebuild": "mkdirp build/css build/classes",
     "copy": "cp app/index.html build/ && cp app/css/* build/css/",
     "build": "npm run babel && npm run prebuild && npm run copy",
