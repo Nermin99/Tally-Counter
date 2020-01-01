@@ -5,7 +5,7 @@
 
 body {
   width: 100%;
-  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
 
 #root {
@@ -14,7 +14,8 @@ body {
   margin-bottom: 5rem;
 }
 
-.tallyKey, .pointer {
+.tallyKey,
+.pointer {
   cursor: pointer;
 }
 
@@ -26,7 +27,7 @@ body {
 
 svg {
   font-weight: 900;
-  font-family: Font Awesome\ 5 Free;
+  font-family: Font awesome\5 Free;
   font-style: normal;
   line-height: 1;
 }
@@ -102,7 +103,8 @@ table {
   table-layout: fixed;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #dee2e6;
   padding: 0.75rem 0.5rem;
 }
@@ -116,7 +118,10 @@ td.tallyKey {
   text-align: center;
 }
 
-td.id, td.sizeClass, td.cellvolume, td.group {
+td.id,
+td.sizeClass,
+td.cellvolume,
+td.group {
   text-align: right;
 }
 
